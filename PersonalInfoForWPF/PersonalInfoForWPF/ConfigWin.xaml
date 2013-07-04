@@ -1,0 +1,30 @@
+﻿<Window xmlns:WPFUserControlLibrary="clr-namespace:WPFUserControlLibrary;assembly=WPFUserControlLibrary"  x:Class="PersonalInfoForWPF.ConfigWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="系统设置" Height="240" Width="300">
+    <DockPanel>
+        <TabControl Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <TabItem Header="默认字体大小">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="10" Text="树节点文本：" VerticalAlignment="Center" Grid.Column="0"/>
+                    <WPFUserControlLibrary:SuperTextBox x:Name="txtTreeNodeDefaultFontSize" IsInteger="True"
+                           Grid.Column="1" Margin="10" Height="20" VerticalAlignment="Center"/>
+                    <TextBlock Margin="10" Text="文本编辑器：" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
+                    <WPFUserControlLibrary:SuperTextBox x:Name="txtRichTextEditorDefaultFontSize" IsInteger="True" Grid.Column="1" Grid.Row="1" Margin="10" Height="20" VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" Grid.Row="2" Content="确定" x:Name="btnOK" Click="btnOK_Click" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10 5"/>
+                </Grid>
+            </TabItem>
+            
+        </TabControl>
+
+    </DockPanel>
+</Window>

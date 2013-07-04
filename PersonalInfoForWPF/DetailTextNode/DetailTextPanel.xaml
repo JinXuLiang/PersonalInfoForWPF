@@ -1,0 +1,16 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:WPFSuperRichTextBox="clr-namespace:WPFSuperRichTextBox;assembly=WPFSuperRichTextBox" x:Class="DetailTextNode.DetailTextPanel" 
+             mc:Ignorable="d" 
+             Background="AliceBlue"
+             d:DesignHeight="600" d:DesignWidth="600">
+    
+        <WPFSuperRichTextBox:SuperWPFRichTextBox 
+            x:Name="richTextBox1"
+            LostFocus="OnLostFocus"
+            HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"/>
+    
+</UserControl>

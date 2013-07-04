@@ -1,0 +1,348 @@
+﻿<UserControl x:Class="WPFSuperRichTextBox.SuperWPFRichTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:local="clr-namespace:WPFSuperRichTextBox"
+             VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Unloaded="UserControl_Unloaded"
+          
+            >
+    <UserControl.CommandBindings>
+
+
+        <CommandBinding Command="local:MySuperEditorCommands.OpenDocument"
+                        Executed="OnOpenDocument" />
+
+        <CommandBinding Command="local:MySuperEditorCommands.InsertDocument"
+                        Executed="OnInsertDocument" />
+
+        <CommandBinding Command="ApplicationCommands.Save"
+                        Executed="OnSave" />
+
+        <CommandBinding Command="local:MySuperEditorCommands.ExportSelectionToFile"
+                        Executed="OnExportSelectionToFile" CanExecute="CanExportSelectionToFile" />
+
+        <CommandBinding Command="ApplicationCommands.Delete"
+                        Executed="OnDelete" CanExecute="CanDelete"/>
+
+        <CommandBinding Command="ApplicationCommands.Find"
+                        Executed="OnFind"/>
+
+
+
+        <CommandBinding Command="ApplicationCommands.Print"
+                        Executed="OnPrint"/>
+
+        <CommandBinding Command="ApplicationCommands.PrintPreview" 
+                        Executed="OnPrintPreview"/>
+
+
+    </UserControl.CommandBindings>
+    <DockPanel>
+
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <!--文件工具栏-->
+            <ToolBar  Band="1" BandIndex="0">
+
+                <Button Name="btnOpenFile" Command="local:MySuperEditorCommands.OpenDocument" ToolTip="打开文件">
+                    <Image Source="Image\open.png" Stretch="None">
+                    </Image>
+                </Button>
+
+                <Button Name="btnInsertFile" 
+                        Command="local:MySuperEditorCommands.InsertDocument" ToolTip="插入文件">
+                    <Image Source="Image\InsertFile.png" Width="16" Height="16"/>
+                </Button>
+
+                <Button Name="btnSaveToFile" 
+                        Command="ApplicationCommands.Save"
+                        ToolTip="保存全部">
+                    <Image Source="Image\save.png" Stretch="None">
+                    </Image>
+
+                </Button>
+
+                <Button Name="btnExportSelectionToFile" 
+                        Command="local:MySuperEditorCommands.ExportSelectionToFile"
+                        ToolTip="导出选择的部分到文件"
+                        >
+                    <Image Source="Image\ExportToFile.png" Stretch="None"/>
+
+                </Button>
+
+                <Separator />
+
+                <Button Command="ApplicationCommands.Print"
+                        ToolTip="打印">
+                    <Image Source="Image\Print.png" Stretch="None"></Image>
+                </Button>
+                <Button  Command="ApplicationCommands.PrintPreview"
+                        ToolTip="打印预览">
+                    <Image Source="Image\PrintPreview.png" Stretch="None"></Image>
+                </Button>
+
+
+                <Separator />
+                <Button Name="btnInsertImage" Click="btnInsertImage_Click" ToolTip="插入图片">
+                    <Image Source="Image\InsertImage.png" Stretch="None" />
+
+                </Button>
+                <Separator />
+
+                <Button Command="ApplicationCommands.Cut"  ToolTip="剪切">
+                    <Image Source="Image\cut.png" Stretch="None">
+                    </Image>
+                </Button>
+
+                <Button  Command="ApplicationCommands.Copy"  ToolTip="复制">
+                    <Image Source="Image\copy.png" Stretch="None"></Image>
+
+                </Button>
+                <Button Command="ApplicationCommands.Paste" ToolTip=" 粘贴">
+                    <Image Source="Image\paste.png" Stretch="None">
+                    </Image>
+                </Button>
+
+                <ToggleButton Command="ApplicationCommands.Delete"  ToolTip="删除">
+                    <Image Source="Image\delete.png" Stretch="None">
+                    </Image>
+                </ToggleButton>
+
+                <Separator />
+
+                <Button Name="btnMoveToBegin" 
+                        Command="EditingCommands.MoveToDocumentStart" ToolTip="移到开头">
+                    <Image Source="Image\MoveToBegin.png" Width="16" Height="16" />
+                </Button>
+                <Button Name="btnMoveToEnd" 
+                        Command="EditingCommands.MoveToDocumentEnd" ToolTip="移到最后">
+                    <Image Source="Image\MoveToEnd.png" Width="16" Height="16"/>
+                </Button>
+
+
+                <Separator />
+                <Button Command="ApplicationCommands.Undo" CommandTarget="{Binding ElementName=RichTextBox1}" ToolTip=" 撤消">
+                    <Image Source="Image\Undo.png" Stretch="None">
+                    </Image>
+
+                </Button>
+                <Button Command="ApplicationCommands.Redo" CommandTarget="{Binding ElementName=RichTextBox1}" ToolTip="重做">
+                    <Image Source="Image\Redo.png" Stretch="None">
+                    </Image>
+
+                </Button>
+                <Separator />
+
+                <Button Name="btnSearch" ToolTip="在文档中查找字词"
+                        Command="ApplicationCommands.Find">
+                    <Image Source="Image\FindWord.png" Stretch="None">
+                    </Image>
+
+                </Button>
+
+            </ToolBar>
+
+
+            <!--编辑工具栏-->
+            <ToolBar Band="2" BandIndex="1" >
+
+                <ToggleButton x:Name="btnBold" Command="EditingCommands.ToggleBold" CommandTarget="{Binding ElementName=RichTextBox1}"   IsChecked="False" ToolTip="粗体">
+                    <Image Source="Image\Bold.png" Stretch="None">
+                    </Image>
+                </ToggleButton>
+                <ToggleButton x:Name="btnItalic" Command="EditingCommands.ToggleItalic" IsChecked="False" CommandTarget="{Binding ElementName=RichTextBox1}" ToolTip="斜体">
+                    <Image Source="Image\Italic.png" Stretch="None"></Image>
+                </ToggleButton>
+                <ToggleButton  x:Name="btnUnderline" Command="EditingCommands.ToggleUnderline" IsChecked="False" CommandTarget="{Binding ElementName=RichTextBox1}" ToolTip="下划线">
+                    <Underline>U</Underline>
+                </ToggleButton>
+                <Separator />
+                <ToggleButton x:Name="btnSuperscript" 
+                              Command="EditingCommands.ToggleSuperscript" ToolTip="设为上标">
+                    <Span FontSize="10">
+                        <Run>X</Run>
+                        <Run BaselineAlignment="Superscript" FontSize="6">2</Run>
+                    </Span>
+
+                </ToggleButton>
+                <ToggleButton x:Name="btnSubscript" 
+                              Command="EditingCommands.ToggleSubscript" ToolTip="设为下标">
+                    <Span FontSize="10">
+                        <Run>X</Run>
+                        <Run BaselineAlignment="Subscript" FontSize="6">2</Run>
+                    </Span>
+                </ToggleButton>
+                <Separator />
+
+
+                <Button x:Name="btnIncreaseFontSize" ToolTip="增大字体" Command="EditingCommands.IncreaseFontSize" Click="btnChnageFontSize_Click" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\IncreaseFontSize.png" Width="20" Height="20" />
+                </Button>
+
+                <Button x:Name="btnDecreaseFontSize" Click="btnChnageFontSize_Click" ToolTip="减小字体" Command="EditingCommands.DecreaseFontSize" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\DecreaseFontSize.png" Width="20" Height="20" />
+                </Button>
+                <TextBox BorderBrush="Black" BorderThickness="1" ToolTip="直接设置选中部分的字体大小" Name="txtFontSize" MinWidth="30" PreviewKeyDown="txtFontSize_KeyDown" ></TextBox>
+                <Separator />
+
+                <Button Name="btnClearAllProperties" Click="btnClearAllProperties_Click" ToolTip="将选中的文本还原到默认格式">还原到默认格式</Button>
+
+
+                <Separator />
+
+                <Menu>
+                    <MenuItem ToolTip="字体颜色">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal" Background="Transparent" >
+                                <Button x:Name="btnTextColor" Click="btnTextColor_Click" >
+                                    <Image Source="Image\fontColor.png" Stretch="None"></Image>
+                                </Button>
+                                <Image Margin="2 0 0 0"  Source="image/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                            </StackPanel>
+
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <local:ColorGridBox x:Name="lstFontColor" PreviewMouseDown="lstFontColor_PreViewMouseDown"  ></local:ColorGridBox>
+                        </MenuItem.Items>
+                    </MenuItem>
+                </Menu>
+
+                <Menu>
+                    <MenuItem ToolTip="字体背景颜色">
+                        <MenuItem.Header>
+                            <Image Source="Image\BackgroundColor.png" Stretch="None" ></Image>
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <local:ColorGridBox x:Name="lstBackgroundColor" 
+                                                
+                                                PreviewMouseDown="lstBackgroundColor_PreviewMouseDown"
+                                                ></local:ColorGridBox>
+                        </MenuItem.Items>
+                    </MenuItem>
+                </Menu>
+                <Separator />
+                <Menu>
+                    <MenuItem ToolTip="项目符号">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal" Background="Transparent" >
+                                <Button x:Name="btnSetBulletList" Click="btnSetBulletList_Click">
+                                    <Image Source="Image\bullet_list.png" Stretch="None"></Image>
+                                </Button>
+                                <Image Margin="2 0 0 0"  Source="image/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                            </StackPanel>
+
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <MenuItem Header="无项目符号" x:Name="mnuNone" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="实心方块" x:Name="mnuBox" Click="listMarkerStyleChange" />
+                            <MenuItem Header="空心方块" x:Name="mnuSquare" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="实心圆形" x:Name="mnuDisc" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="空心圆形" x:Name="mnuCircle" Click="listMarkerStyleChange"/>
+                        </MenuItem.Items>
+                    </MenuItem>
+                </Menu>
+
+                <Menu>
+                    <MenuItem ToolTip="项目符号">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal" Background="Transparent" >
+                                <Button x:Name="btnSetNumberList" Click="btnSetNumberList_Click" >
+                                    <Image Source="Image\number_list.png" Stretch="None"></Image>
+                                </Button>
+                                <Image Margin="2 0 0 0"  Source="image/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                            </StackPanel>
+
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <MenuItem Header="取消数字编号" x:Name="mnuNone2" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="数字编号1,2,3" x:Name="mnuDecimal" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="小写a.b.c." x:Name="mnuLowerLatin" Click="listMarkerStyleChange" />
+                            <MenuItem Header="大写A.B.C." x:Name="mnuUpperLatin" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="小写i ii iii" x:Name="mnuLowerRoman" Click="listMarkerStyleChange"/>
+                            <MenuItem Header="大写I II III" x:Name="mnuUpperRoman" Click="listMarkerStyleChange"/>
+                        </MenuItem.Items>
+                    </MenuItem>
+                </Menu>
+                <ComboBox ToolTip="选择字体" Name="cboFontFamilies" MinWidth="100" SelectionChanged="cboFontFamilies_SelectionChanged"
+                          ></ComboBox>
+
+
+                <Separator />
+                <ToggleButton ToolTip="左对齐" Name="btnAlignLeft"   Command="EditingCommands.AlignLeft" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\alignLeft.png"/>
+                </ToggleButton>
+                <ToggleButton ToolTip="居中" Name="btnAlignCenter" Command="EditingCommands.AlignCenter" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\alignMiddle.png"/>
+                </ToggleButton>
+                <ToggleButton ToolTip="右对齐" Name="btnAlignRight"  Command="EditingCommands.AlignRight" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\alignRight.png"/>
+                </ToggleButton>
+                <ToggleButton ToolTip="两端对齐" Name="btnAllignJustify"  Command="EditingCommands.AlignJustify" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\alignLeftAndRight.png"/>
+                </ToggleButton>
+                <Separator />
+                <Button ToolTip="增加段落缩进" Command="EditingCommands.IncreaseIndentation" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\IncreaseIndent.png" Width="20" Height="20"/>
+                </Button>
+                <Button ToolTip="减少段落缩进" Command="EditingCommands.DecreaseIndentation" CommandTarget="{Binding ElementName=RichTextBox1}">
+                    <Image Source="Image\DecreaseIndent.png" Width="20" Height="20"/>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+
+
+
+        <Grid DockPanel.Dock="Top" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <RichTextBox Name="RichTextBox1"
+              VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+              Grid.Row="0" MinHeight="100" FontSize="12" 
+              VerticalScrollBarVisibility="Auto"   
+              AcceptsReturn="True" AcceptsTab="True" 
+              Background="PapayaWhip" 
+               
+              >
+                <RichTextBox.CommandBindings>
+                    <CommandBinding Command="EditingCommands.ToggleSuperscript"
+                        Executed="OnSetSuperscript" CanExecute="CanSetSuperscript" />
+                    <CommandBinding Command="EditingCommands.ToggleSubscript"
+                        Executed="OnSetSubscript" CanExecute="CanSetSubscript" />
+                    <!--主要是为了在粘贴图片时自动左对齐，所以不能使用标准的ApplicationCommands.Paste内置响应功能 -->
+                    <CommandBinding Command="ApplicationCommands.Paste" 
+                        Executed="OnPaste"/>
+
+                    <CommandBinding Command="ApplicationCommands.Cut" 
+                        Executed="OnMyCut" />
+
+                    <CommandBinding Command="local:MySuperEditorCommands.PasteAndClearAllProperties"
+                                    Executed="PasteAndResetToDefaultFormat"/>
+
+                </RichTextBox.CommandBindings>
+                <RichTextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem  Command="ApplicationCommands.Copy" Header="复制">
+
+                        </MenuItem>
+                        <MenuItem Command="ApplicationCommands.Cut" Header="剪切">
+
+                        </MenuItem>
+                        <MenuItem Command="ApplicationCommands.Paste" Header="粘贴">
+
+                        </MenuItem>
+                        <MenuItem Command="local:MySuperEditorCommands.PasteAndClearAllProperties" Header="去除格式粘贴">
+
+                        </MenuItem>
+
+                    </ContextMenu>
+
+                </RichTextBox.ContextMenu>
+
+            </RichTextBox>
+        </Grid>
+    </DockPanel>
+</UserControl>

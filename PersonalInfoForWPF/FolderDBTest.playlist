@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="DataAccessLayerTest.FolderRepositoryTest.TestAddFolder" /><Add Test="DataAccessLayerTest.FolderRepositoryTest.ShowAllFolderDB" /></Playlist>

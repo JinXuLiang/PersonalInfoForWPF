@@ -1,0 +1,333 @@
+﻿<Window xmlns:WPFUserControlLibrary="clr-namespace:WPFUserControlLibrary;assembly=WPFUserControlLibrary"  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:WPFSuperTreeView="clr-namespace:WPFSuperTreeView;assembly=WPFSuperTreeView" x:Class="PersonalInfoForWPF.MainWindow"
+        xmlns:local="clr-namespace:PersonalInfoForWPF"
+        Icon="images/app_icon.ico"
+        Closing="Window_Closing"
+        Title="个人资料管理中心" Height="768" Width="1024">
+    <Window.CommandBindings>
+        <!-- 添加子节点命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.AddChild_OnlyText" Executed="AddChild_OnlyText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.AddChild_DetailText" Executed="AddChild_DetailText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.AddChild_Folder" Executed="AddChild_Folder"/>
+        <!-- 添加兄弟节点命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.AddSibling_OnlyText" Executed="AddSibling_OnlyText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.AddSibling_DetailText" Executed="AddSibling_DetailText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.AddSibling_Folder" Executed="AddSibling_Folder"/>
+        <!-- 添加根节点命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.AddRoot_OnlyText" Executed="AddRoot_OnlyText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.AddRoot_DetailText" Executed="AddRoot_DetailText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.AddRoot_Folder" Executed="AddRoot_Folder"/>
+        <!-- 删除节点命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.DeleteNode" Executed="DeleteNode"/>
+        <!-- 节点移动命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.MoveLeft" Executed="MoveLeft"/>
+        <CommandBinding Command="local:PersonalInfoCommands.MoveRight" Executed="MoveRight"/>
+        <CommandBinding Command="local:PersonalInfoCommands.MoveUp" Executed="MoveUp"/>
+        <CommandBinding Command="local:PersonalInfoCommands.MoveDown" Executed="MoveDown"/>
+
+        <!-- 节点改名命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.RenameNode" Executed="RenameNode"/>
+
+        <!-- 节点的剪切与粘贴命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.CutNode" Executed="CutNode"/>
+        <CommandBinding Command="local:PersonalInfoCommands.PasteNode" Executed="PasteNode"/>
+
+        <!-- 复制节点文本命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.CopyNodeText" Executed="CopyNodeTextExecuted"/>
+
+        <!-- 展开全部子树命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ExpandAllNode" Executed="ExpandAllNode"/>
+
+        <!-- 显示查找窗体命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ShowFindNodesWindow" Executed="ShowFindNodesWindow"/>
+
+        <!-- 节点类型转换命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ToDetailText" Executed="ToDetailText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.ToOnlyText" Executed="ToOnlyText"/>
+        <CommandBinding Command="local:PersonalInfoCommands.ToFolder" Executed="ToFolder"/>
+
+        <!--显示系统配置命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ShowConfigWin" Executed="ShowConfigWin"/>
+
+        <!-- 退出命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ExitApplication" Executed="ExitApplication"/>
+
+        <!-- 切换数据库命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ChangeDB" Executed="ChangeDB"/>
+        
+        <!--复制数据库命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.CopyDB" Executed="CopyDB"/>
+
+        <!-- 节点访问历史记录命令 -->
+        <CommandBinding Command="local:PersonalInfoCommands.GoBack" Executed="GoBack" CanExecute="CanGoBack"/>
+        <CommandBinding Command="local:PersonalInfoCommands.GoForward" Executed="GoForward" CanExecute="CanGoForward"/>
+
+        <!-- 设置节点为粗体 -->
+        <CommandBinding Command="local:PersonalInfoCommands.ToggleNodeTextBold" Executed="ToggleNodeTextBold" />
+    </Window.CommandBindings>
+
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="系统功能">
+                <MenuItem.Items>
+                    <MenuItem Header="系统设置..." Command="local:PersonalInfoCommands.ShowConfigWin"/>
+                    <Separator/>
+                    <MenuItem Header="切换资料库" Command="local:PersonalInfoCommands.ChangeDB"/>
+                    <MenuItem Header="创建新资料库" Command="local:PersonalInfoCommands.CopyDB" />
+                    <Separator/>
+                    <MenuItem Header="退出" Command="local:PersonalInfoCommands.ExitApplication"/>
+                </MenuItem.Items>
+                
+            </MenuItem>
+        </Menu>
+        <!-- 工具栏-->
+        <ToolBarTray DockPanel.Dock="Top" >
+            <ToolBar Band="1" BandIndex="1" >
+                <Button x:Name="btnExit" Command="local:PersonalInfoCommands.ExitApplication" ToolTip="退出程序" >
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="6"
+                           >
+                        <Image Source="images/Exit.ico"  />
+                    </Border>
+                </Button>
+                <Separator/>
+                <Button x:Name="btnGoBack" Command="local:PersonalInfoCommands.GoBack" ToolTip="回退" >
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="6"
+                           >
+                        <Image Source="images/Back.png" Width="28" Height="28" />
+                    </Border>
+                </Button>
+                
+                <Button x:Name="btnGoForward" Command="local:PersonalInfoCommands.GoForward" ToolTip="前进" >
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="6"
+                           >
+                        <Image Source="images/Forward.png" Width="28" Height="28" />
+                    </Border>
+                </Button>
+                <Separator/>
+
+
+                <Menu Background="Transparent" VerticalAlignment="Stretch"  >
+                    <MenuItem >
+                        <MenuItem.Header>
+                            <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Margin="-6 0 -6 0" >
+                                <StackPanel Orientation="Horizontal" Background="Transparent" >
+                                    <Button ToolTip="添加纯文本型第一层节点" BorderBrush="Transparent" Background="Transparent" BorderThickness="0" Padding="2 0 4 0"
+                                             Command="local:PersonalInfoCommands.AddRoot_OnlyText">
+                                        <Image Source="images/AddRoot.ico" Width="28" />
+                                    </Button>
+                                    <Image Margin="0 15 5 15" Source="images/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <MenuItem  Header="纯文本型（第一层节点）" Command="local:PersonalInfoCommands.AddRoot_OnlyText" />
+                            <MenuItem  Header="详细信息型（第一层节点）" Command="local:PersonalInfoCommands.AddRoot_DetailText"/>
+                            <MenuItem  Header="文件夹型（第一层节点）" Command="local:PersonalInfoCommands.AddRoot_Folder"/>
+
+                        </MenuItem.Items>
+                    </MenuItem>
+
+                    <MenuItem >
+                        <MenuItem.Header>
+                            <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Margin="-6 0 -6 0"  >
+                                <StackPanel Orientation="Horizontal" Background="Transparent"  >
+                                    <Button ToolTip="添加纯文本型兄弟节点" BorderBrush="Transparent" Background="Transparent" BorderThickness="0" Padding="2 0 4 0"
+                                            Command="local:PersonalInfoCommands.AddSibling_OnlyText" >
+                                        <Image Source="images/AddBrother.ico" Width="28" />
+                                    </Button>
+                                    <Image Margin="0 15 5 15" Source="images/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <MenuItem  Header="纯文本型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_OnlyText" />
+                            <MenuItem  Header="详细信息型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_DetailText"/>
+                            <MenuItem  Header="文件夹型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_Folder"/>
+                        </MenuItem.Items>
+                    </MenuItem>
+
+                    <MenuItem >
+                        <MenuItem.Header>
+                            <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Margin="-6 0 -6 0">
+                                <StackPanel Orientation="Horizontal" Background="Transparent" >
+                                    <Button ToolTip="添加纯文本型子节点" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Padding="2 0 4 0"
+                                            Command="local:PersonalInfoCommands.AddChild_OnlyText" >
+                                        <Image Source="images/AddChild.ico" Width="28" />
+                                    </Button>
+                                    <Image Margin="0 15 5 15" Source="images/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <MenuItem  Header="纯文本型（儿子）" Command="local:PersonalInfoCommands.AddChild_OnlyText" />
+                            <MenuItem  Header="详细信息型（儿子）" Command="local:PersonalInfoCommands.AddChild_DetailText"/>
+                            <MenuItem  Header="文件夹型（儿子）" Command="local:PersonalInfoCommands.AddChild_Folder"/>
+                        </MenuItem.Items>
+                    </MenuItem>
+
+
+                </Menu>
+                <Separator/>
+                <Button Command="local:PersonalInfoCommands.RenameNode">
+                    <Border ToolTip="当前节点改名" BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="2">
+                        <Image Source="images/Rename.ico"  />
+                    </Border>
+                </Button>
+
+                <Button ToolTip="删除当前节点" Command="local:PersonalInfoCommands.DeleteNode">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="6">
+                        <Image Source="images/delete.ico" Width="24" />
+                    </Border>
+                </Button>
+
+                <Button Command="local:PersonalInfoCommands.CutNode" ToolTip="剪切节点"  >
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="6">
+                        <Image Source="images/cut_node.png" Width="24" />
+                    </Border>
+                </Button>
+
+                <Button Command="local:PersonalInfoCommands.PasteNode" ToolTip="粘贴节点">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="6">
+                        <Image Source="images/paste_node.png" Width="24" />
+                    </Border>
+                </Button>
+
+                <Menu Background="Transparent" VerticalAlignment="Stretch"  >
+                    <MenuItem >
+                        <MenuItem.Header>
+                            <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Margin="-6 0 -6 0" >
+                                <StackPanel Orientation="Horizontal" Background="Transparent" >
+                                    <Button ToolTip="转换为详细信息型节点" BorderBrush="Transparent" Background="Transparent" BorderThickness="0" Padding="2 0 4 0"
+                                             Command="local:PersonalInfoCommands.ToDetailText">
+                                        <Image Source="images/change_type.ico" Width="28" />
+                                    </Button>
+                                    <Image Margin="0 15 5 15" Source="images/down_arrow.png" Width="8" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </MenuItem.Header>
+                        <MenuItem.Items>
+                            <MenuItem Command="local:PersonalInfoCommands.ToOnlyText" Header="转换为纯文本型"  />
+                            <MenuItem Command="local:PersonalInfoCommands.ToDetailText"  Header="转换为详细信息型" />
+                            <MenuItem Command="local:PersonalInfoCommands.ToFolder"  Header="转换为文件夹型" />
+                        </MenuItem.Items>
+                    </MenuItem>
+                </Menu>
+
+                <Separator />
+                <Button ToolTip="节点上移" Command="local:PersonalInfoCommands.MoveUp">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="4">
+                        <Image Source="images/move_up.ico"  Width="28"/>
+                    </Border>
+                </Button>
+                <Button ToolTip="节点下移" Command="local:PersonalInfoCommands.MoveDown">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="4">
+                        <Image Source="images/move_down.ico" Width="28"/>
+                    </Border>
+                </Button>
+                <Button ToolTip="节点升级" Command="local:PersonalInfoCommands.MoveLeft">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="4">
+                        <Image Source="images/move_left.ico" Width="28"/>
+                    </Border>
+                </Button>
+                <Button ToolTip="节点降级" Command="local:PersonalInfoCommands.MoveRight">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="4">
+                        <Image Source="images/move_right.ico" Width="28" />
+                    </Border>
+                </Button>
+                <Separator />
+                <Button ToolTip="查找" Command="local:PersonalInfoCommands.ShowFindNodesWindow">
+                    <Border BorderThickness="1" BorderBrush="#555555" CornerRadius="3" Padding="4">
+                        <Image Source="images/find.ico" Width="28" />
+                    </Border>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <!--状态条-->
+      
+       <DockPanel DockPanel.Dock="Bottom"  VerticalAlignment="Bottom"  >
+            <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right" Text="PersonalInfo ver 1.0 开发:金旭亮 " VerticalAlignment="Center" />
+            <TextBlock x:Name="tbInfo" Text="a" HorizontalAlignment="Stretch" />
+        </DockPanel>
+        
+
+        <Grid   >
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <!--树控件 -->
+            <WPFSuperTreeView:SuperTreeView 
+                x:Name="treeView1" Grid.Column="0" Margin="10" 
+                VerticalAlignment="Stretch"  Background="#FFE6D2D2" 
+                SelectedItemChanged="OnTreeViewSelectedItemChanged" 
+                ContextMenuOpening="treeView1_ContextMenuOpening"
+                PreviewMouseRightButtonDown="treeView1_PreviewMouseRightButtonDown"
+                PreviewKeyDown="treeView1_PreviewKeyDown"
+             >
+                <WPFSuperTreeView:SuperTreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="local:PersonalInfoCommands.CopyNodeText" Header="复制节点文本"/>
+                        <MenuItem Command="local:PersonalInfoCommands.ExpandAllNode" Header="展开全部子树"/>
+                        <Separator/>
+                        <MenuItem Command="local:PersonalInfoCommands.CutNode" Header="剪切节点"/>
+                        <MenuItem Command="local:PersonalInfoCommands.PasteNode" Header="粘贴节点"/>
+                        <Separator/>
+                        <MenuItem Header="增加子节点">
+                            <MenuItem Header="纯文本型（儿子）" Command="local:PersonalInfoCommands.AddChild_OnlyText" />
+                            <MenuItem Header="详细信息型（儿子）" Command="local:PersonalInfoCommands.AddChild_DetailText"/>
+                            <MenuItem Header="文件夹型（儿子）" Command="local:PersonalInfoCommands.AddChild_Folder"/>
+                        </MenuItem>
+                        <MenuItem Header="增加兄弟节点">
+                            <MenuItem.Items>
+                                <MenuItem Header="纯文本型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_OnlyText" />
+                                <MenuItem Header="详细信息型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_DetailText"/>
+                                <MenuItem Header="文件夹型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_Folder"/>
+                            </MenuItem.Items>
+
+                        </MenuItem>
+                        <MenuItem Header="增加一级节点">
+                            <MenuItem.Items>
+                                <MenuItem Header="纯文本型" Command="local:PersonalInfoCommands.AddRoot_OnlyText" />
+                                <MenuItem Header="详细信息型" Command="local:PersonalInfoCommands.AddRoot_DetailText"/>
+                                <MenuItem Header="文件夹型" Command="local:PersonalInfoCommands.AddRoot_Folder"/>
+                            </MenuItem.Items>
+                        </MenuItem>
+                        <MenuItem Command="local:PersonalInfoCommands.DeleteNode" Header="删除节点"/>
+                        <MenuItem Command="local:PersonalInfoCommands.RenameNode" Header="节点改名"/>
+                        <Separator/>
+                        <MenuItem Command="local:PersonalInfoCommands.MoveUp" Header="节点上移"/>
+                        <MenuItem Command="local:PersonalInfoCommands.MoveDown" Header="节点下移"/>
+                        <MenuItem Command="local:PersonalInfoCommands.MoveLeft" Header="节点升级"/>
+                        <MenuItem Command="local:PersonalInfoCommands.MoveDown" Header="节点降级"/>
+                        <Separator/>
+                        <MenuItem Command="local:PersonalInfoCommands.ToOnlyText" Header="转换为纯文本型"  />
+                        <MenuItem Command="local:PersonalInfoCommands.ToDetailText"  Header="转换为详细信息型" />
+                        <MenuItem Command="local:PersonalInfoCommands.ToFolder"  Header="转换为文件夹型" />
+                        <Separator/>
+                        <MenuItem Header="设置节点文本粗体" Command="local:PersonalInfoCommands.ToggleNodeTextBold"/>
+                        <MenuItem Header="修改节点文本颜色"/>
+                        
+                    </ContextMenu>
+
+                </WPFSuperTreeView:SuperTreeView.ContextMenu>
+
+            </WPFSuperTreeView:SuperTreeView>
+
+            <!--左右面板分隔条 -->
+            <GridSplitter Focusable="true" Width="5" Grid.Column="1" Height="Auto" ShowsPreview="True" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+
+            <!--此控件用于承载节点面板 -->
+            <ContentControl Focusable="true"  x:Name="NodeUIContainer" Margin="10"  Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Grid>
+    </DockPanel>
+
+</Window>

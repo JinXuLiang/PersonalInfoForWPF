@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{55E8E2F1-428C-42F4-B611-D30344E8676D}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WPFSuperRichTextBox</RootNamespace>
+    <AssemblyName>WPFSuperRichTextBox</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ReachFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FindAndReplace\FindAndReplaceManager.cs" />
+    <Compile Include="FindAndReplace\winFindAndReplace.xaml.cs">
+      <DependentUpon>winFindAndReplace.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SuperRichTextBoxResourses.cs" />
+    <Compile Include="Print\PrintingPaginator.cs" />
+    <Compile Include="Print\PrintManager.cs" />
+    <Compile Include="Print\PrintPreviewDialog.xaml.cs">
+      <DependentUpon>PrintPreviewDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="XAMLHelper.cs" />
+    <Page Include="FindAndReplace\winFindAndReplace.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Print\PrintPreviewDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SuperWPFRichTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="ColorGridBox.cs" />
+    <Compile Include="MySuperEditorCommands.cs" />
+    <Compile Include="MySuperEditorHelper.cs" />
+    <Compile Include="RichTextBoxDocumentManager.cs" />
+    <Compile Include="SuperWPFRichTextBox.xaml.cs">
+      <DependentUpon>SuperWPFRichTextBox.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\BackgroundColor.png" />
+    <Resource Include="Image\Bold.png" />
+    <Resource Include="Image\Copy.png" />
+    <Resource Include="Image\Cut.png" />
+    <Resource Include="Image\Delete.png" />
+    <Resource Include="Image\fontColor.png" />
+    <Resource Include="Image\Italic.png" />
+    <Resource Include="Image\NewDocument.png" />
+    <Resource Include="Image\open.png" />
+    <Resource Include="Image\Paste.png" />
+    <Resource Include="Image\Print.png" />
+    <Resource Include="Image\Redo.png" />
+    <Resource Include="Image\save.png" />
+    <Resource Include="Image\Undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SystemLibrary\SystemLibrary.csproj">
+      <Project>{16f9f52e-039d-426f-ba62-ae299b4e6340}</Project>
+      <Name>SystemLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\PrintPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\InsertImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\ExportToFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\DecreaseFontSize.png" />
+    <Resource Include="Image\IncreaseFontSize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\alignLeft.png" />
+    <Resource Include="Image\alignMiddle.png" />
+    <Resource Include="Image\alignRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\alignLeftAndRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\DecreaseIndent.png" />
+    <Resource Include="Image\IncreaseIndent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\MoveToBegin.png" />
+    <Resource Include="Image\MoveToEnd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\FindWord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\insertFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\down_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\bullet_list.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\number_list.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
