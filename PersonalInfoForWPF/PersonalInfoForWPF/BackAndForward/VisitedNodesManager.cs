@@ -36,17 +36,18 @@ namespace PersonalInfoForWPF.BackAndForward
             
         }
 
-        public bool CanGoBack()
-        {
-            return !BackStack.IsEmpty();
-        }
+      
 
         public void GoBack()
         {
             String nodePath = BackStack.Pop();
             if (!String.IsNullOrEmpty(nodePath))
             {
-                ForwardStack.Push(_treeView.SelectedItem.Path);
+                if (_treeView.SelectedItem != null)
+                {
+                    ForwardStack.Push(_treeView.SelectedItem.Path);
+                }
+               
                 ShouldAddToStack = false;
                 _treeView.ShowNode(nodePath);
                 
@@ -58,15 +59,16 @@ namespace PersonalInfoForWPF.BackAndForward
             String nodePath = ForwardStack.Pop();
             if (!String.IsNullOrEmpty(nodePath))
             {
-                BackStack.Push(_treeView.SelectedItem.Path);
+                if (_treeView.SelectedItem != null)
+                {
+                    BackStack.Push(_treeView.SelectedItem.Path);
+                }
+              
                 ShouldAddToStack = false;
                 _treeView.ShowNode(nodePath);
                
             }
         }
-        public bool CanGoForward()
-        {
-            return !ForwardStack.IsEmpty();
-        }
+     
     }
 }

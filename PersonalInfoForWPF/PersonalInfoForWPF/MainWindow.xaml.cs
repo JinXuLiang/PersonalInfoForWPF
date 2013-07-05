@@ -701,18 +701,7 @@ namespace PersonalInfoForWPF
 
         }
 
-        private void CanGoBack(object sender, CanExecuteRoutedEventArgs e)
-        {
-            if (visitedNodesManager != null)
-            {
-                e.CanExecute = visitedNodesManager.CanGoBack();
-            }
-            else
-            {
-                e.CanExecute = false;
-            }
-
-        }
+       
 
         private void GoForward(object sender, ExecutedRoutedEventArgs e)
         {
@@ -721,17 +710,7 @@ namespace PersonalInfoForWPF
 
         }
 
-        private void CanGoForward(object sender, CanExecuteRoutedEventArgs e)
-        {
-            if (visitedNodesManager != null)
-            {
-                e.CanExecute = visitedNodesManager.CanGoForward();
-            }
-            else
-            {
-                e.CanExecute = false;
-            }
-        }
+       
 
         private void ToggleNodeTextBold(object sender, ExecutedRoutedEventArgs e)
         {

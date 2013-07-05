@@ -102,11 +102,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="infocenter.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <EntityDeploy Include="InfoCenterModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>InfoCenterModel.Designer.cs</LastGenOutput>

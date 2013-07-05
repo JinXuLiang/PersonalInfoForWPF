@@ -61,8 +61,8 @@
         <CommandBinding Command="local:PersonalInfoCommands.CopyDB" Executed="CopyDB"/>
 
         <!-- 节点访问历史记录命令 -->
-        <CommandBinding Command="local:PersonalInfoCommands.GoBack" Executed="GoBack" CanExecute="CanGoBack"/>
-        <CommandBinding Command="local:PersonalInfoCommands.GoForward" Executed="GoForward" CanExecute="CanGoForward"/>
+        <CommandBinding Command="local:PersonalInfoCommands.GoBack" Executed="GoBack" />
+        <CommandBinding Command="local:PersonalInfoCommands.GoForward" Executed="GoForward"/>
 
         <!-- 设置节点为粗体 -->
         <CommandBinding Command="local:PersonalInfoCommands.ToggleNodeTextBold" Executed="ToggleNodeTextBold" />
