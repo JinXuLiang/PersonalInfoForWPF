@@ -165,8 +165,34 @@ namespace WPFSuperTreeView
             //对事件进行响应
             edtText.KeyDown += edtText_KeyDown;
             edtText.LostFocus += edtText_LostFocus;
+            //由于默认情况下WPF的TextBox的Cut存在BUG：即完成复制工作但却不删除选中的文字，因此不得不用自己的代码取代默认的命令响应代码
+            CommandBinding bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Cut;
+            bind.Executed += bind_Executed;
+            bind.CanExecute += bind_CanExecute;
+            edtText.CommandBindings.Add(bind);
             //使用当前时间作为本Item的ID
             id = TimerUtils.getHighPrecisionCurrentTime();
+        }
+
+        void bind_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(edtText.SelectedText))
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+        }
+
+        void bind_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            //Copy似乎没有BUG
+            edtText.Copy();
+            //将当前选中的文本清空
+            edtText.SelectedText = "";
         }
 
         void edtText_LostFocus(object sender, RoutedEventArgs e)
