@@ -588,7 +588,16 @@ namespace PersonalInfoForWPF
                 IDataInfo infoObj = treeView1.SelectedItem.NodeData.DataItem;
                 if (accessobj != null)
                 {
-                    accessobj.UpdateDataInfoObject(infoObj);
+                    try
+                    {
+                        accessobj.UpdateDataInfoObject(infoObj);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
+                    }
+                   
                 }
             }
 

@@ -49,7 +49,7 @@ namespace DetailTextNode
                 catch (Exception ex)
                 {
 
-                    Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.Message); }));
+                    Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
                 }
 
             });
@@ -123,7 +123,8 @@ namespace DetailTextNode
                 catch (Exception ex)
                 {
 
-                    Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.Message); }));
+                   // Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.Message); }));
+                    Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
                 }
             });
             thread.Start();

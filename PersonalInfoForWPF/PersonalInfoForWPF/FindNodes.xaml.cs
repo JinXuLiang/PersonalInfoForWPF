@@ -62,8 +62,20 @@ namespace PersonalInfoForWPF
                 {
                     _tree.SelectedItem.NodeData.DataItem.RefreshMe();
                     //当前节点如果是OnlyText时，其AccessObj==null，此时不应该更新底层存储
-                    if(_tree.SelectedItem.NodeData.AccessObject!=null)
-                        _tree.SelectedItem.NodeData.AccessObject.UpdateDataInfoObject(_tree.SelectedItem.NodeData.DataItem);
+                    if (_tree.SelectedItem.NodeData.AccessObject != null)
+                    {
+                        try
+                        {
+                            _tree.SelectedItem.NodeData.AccessObject.UpdateDataInfoObject(_tree.SelectedItem.NodeData.DataItem);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
+                        }
+                       
+                    }
+                       
 
                 }
                 //显示新数据
