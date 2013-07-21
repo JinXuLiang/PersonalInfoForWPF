@@ -11,7 +11,10 @@ namespace DataAccessLayer
     /// </summary>
     public class DALConfig
     {
-        private static String connectStringTemplate = "metadata=res://*/InfoCenterModel.csdl|res://*/InfoCenterModel.ssdl|res://*/InfoCenterModel.msl;provider=System.Data.SqlServerCe.4.0;provider connection string=\"data source={0}\"";
+        /// <summary>
+        /// 最大数据库文件大小设置为不超过4G
+        /// </summary>
+        private static String connectStringTemplate = "metadata=res://*/InfoCenterModel.csdl|res://*/InfoCenterModel.ssdl|res://*/InfoCenterModel.msl;provider=System.Data.SqlServerCe.4.0;provider connection string=\"data source={0};Max Database Size=4000;\"";
 
         public static String getConnectionString(String dbFileName)
         {
