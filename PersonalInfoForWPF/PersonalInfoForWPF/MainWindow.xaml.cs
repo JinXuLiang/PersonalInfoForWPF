@@ -142,6 +142,12 @@ namespace PersonalInfoForWPF
 
         private void OnTreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            //上移和下移，不激发此事件
+            //if (curNodeMove == NodeMoveType.NodeMoveUp || curNodeMove == NodeMoveType.NodeMoveDown)
+            //{
+            //    curNodeMove = NodeMoveType.NodeNotMove;
+            //    return;
+            //}
             TreeViewIconsItem newSelectedNode = e.NewValue as TreeViewIconsItem;
             if (treeView1.IsInEditMode)
             {
@@ -403,18 +409,27 @@ namespace PersonalInfoForWPF
         }
 
         #region "节点移动"
+        /// <summary>
+        /// 用于代表当前节点移动的类型
+        /// </summary>
+       // private NodeMoveType curNodeMove=NodeMoveType.NodeNotMove ;
 
         private void OnNodeMove(NodeMoveType moveType)
         {
+           // curNodeMove = moveType;
+
             if (treeView1.IsInEditMode)
             {
                 treeView1.SelectedItem.EndEdit();
             }
-            TreeViewIconsItem selectedNode = treeView1.SelectedItem as TreeViewIconsItem;
+            TreeViewIconsItem selectedNode = treeView1.SelectedItem;
+            //还原默认节点图标
+            ChangeNodeIcon(treeView1.SelectedItem, treeView1.SelectedItem.NodeData.DataItem.NormalIcon);
             switch (moveType)
             {
                 case NodeMoveType.NodeMoveUp:
                     treeView1.MoveUp(selectedNode);
+                    
                     break;
                 case NodeMoveType.NodeMoveDown:
                     treeView1.MoveDown(selectedNode);
@@ -432,6 +447,9 @@ namespace PersonalInfoForWPF
                     break;
             }
             SaveTreeToDB();
+            //更新节点图标
+            ChangeNodeIcon(treeView1.SelectedItem,treeView1.SelectedItem.NodeData.DataItem.SelectedIcon);
+           
             //SaveTreeToFile();
         }
 

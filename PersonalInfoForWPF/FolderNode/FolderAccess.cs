@@ -51,7 +51,7 @@ namespace FolderNode
         public int UpdateDataInfoObject(IDataInfo dataInfoObject)
         {
             FolderInfo obj = dataInfoObject as FolderInfo;
-            if (obj.Text.Length > DALConfig.MaxTextFieldSize)
+            if (String.IsNullOrEmpty(obj.Text)==false && obj.Text.Length > DALConfig.MaxTextFieldSize)
             {
                 obj.Text = obj.Text.Substring(0, DALConfig.MaxTextFieldSize);
             }

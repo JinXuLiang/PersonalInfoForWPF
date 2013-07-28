@@ -40,7 +40,7 @@ namespace WPFSuperTreeView
         {
             tree.Items.Clear();
             nodesManager.nodes.Clear();
-
+            ShouldRaiseSelectedItemChangedEvent = true;
         }
 
         /// <summary>
@@ -50,13 +50,22 @@ namespace WPFSuperTreeView
         /// <returns></returns>
         public TreeViewIconsItem ShowNode(String NodePath)
         {
+            
             if (String.IsNullOrEmpty(NodePath))
             {
                 return null;
             }
+            //要显示的节点就是当前节点
+            TreeViewIconsItem curSelectedNode=tree.SelectedItem as TreeViewIconsItem;
+            if (curSelectedNode != null && curSelectedNode.Path == NodePath)
+            {
+                return null;
+            }
+            //查找节点
             TreeViewIconsItem node = Nodes.FirstOrDefault(n => n.Path == NodePath);
             if (node != null)
             {
+                ShouldRaiseSelectedItemChangedEvent = true;
                 node.IsSelected = true;
                 node.IsExpanded = true;
                 ExpandToNode(node);
@@ -161,7 +170,7 @@ namespace WPFSuperTreeView
             {
                 selectedNode.IsExpanded = true;
             }
-           
+            ShouldRaiseSelectedItemChangedEvent = true;
 
             TreeViewIconsItem treeNode = new TreeViewIconsItem(this, nodeDataObject);
             treeNode.HeaderText = nodeText;
@@ -287,6 +296,7 @@ namespace WPFSuperTreeView
             {
                 return;
             }
+            ShouldRaiseSelectedItemChangedEvent = true;
             if (selectedNode.Parent == tree)
             {
                 tree.Items.Remove(selectedNode);
@@ -299,7 +309,7 @@ namespace WPFSuperTreeView
             nodesManager.DeleteNode(selectedNode);
             //更新数据库
             NodePathManager.DeleteDataInfoObjectOfNodeAndItsChildren(selectedNode.Path);
-           
+            
         }
         #endregion
 
@@ -467,6 +477,10 @@ namespace WPFSuperTreeView
 
         #region "节点移动及NodeMove事件"
         /// <summary>
+        /// 用于确定是否激发树的SelectedItemChanged事件通知外界
+        /// </summary>
+        private bool ShouldRaiseSelectedItemChangedEvent = true;
+        /// <summary>
         /// 节点移动事件
         /// </summary>
         public event EventHandler<NodeMoveEventArgs> NodeMove;
@@ -486,6 +500,8 @@ namespace WPFSuperTreeView
             {
                 return;
             }
+            //上移时，不激发树的SelectedItemChanged事件
+            ShouldRaiseSelectedItemChangedEvent = false;
             //先删除自己，再在新位置重新插入
             tree.BeginInit();
             ItemsControl parent = GetParent(node);
@@ -494,7 +510,7 @@ namespace WPFSuperTreeView
             node.IsSelected = true;
             tree.EndInit();
 
-          
+            ShouldRaiseSelectedItemChangedEvent = true;
 
         }
         /// <summary>
@@ -517,6 +533,8 @@ namespace WPFSuperTreeView
             {
                 return;
             }
+            //下移时，不激发树的SelectedItemChanged事件
+            ShouldRaiseSelectedItemChangedEvent = false;
             //先删除自己，再在新位置重新插入
             tree.BeginInit();
             parent.Items.RemoveAt(index);
@@ -524,7 +542,7 @@ namespace WPFSuperTreeView
             node.IsSelected = true;
 
             tree.EndInit();
-
+            ShouldRaiseSelectedItemChangedEvent = true;
 
         }
         /// <summary>
@@ -544,6 +562,8 @@ namespace WPFSuperTreeView
             {
                 return;
             }
+            //左移时，不激发树的SelectedItemChanged事件
+            ShouldRaiseSelectedItemChangedEvent = false;
             //记录下当前路径
             String oldPath = node.Path;
             //查找父节点
@@ -582,6 +602,7 @@ namespace WPFSuperTreeView
             node.IsSelected = true;
 
             tree.EndInit();
+            ShouldRaiseSelectedItemChangedEvent = true;
             //激发事件
             if (NodeMove != null)
             {
@@ -607,6 +628,8 @@ namespace WPFSuperTreeView
             {
                 return;
             }
+            //右移时，不激发树的SelectedItemChanged事件
+            ShouldRaiseSelectedItemChangedEvent = false;
             //记录下当前路径
             String oldPath = node.Path;
 
@@ -669,6 +692,7 @@ namespace WPFSuperTreeView
 
             node.IsSelected = true;
             tree.EndInit();
+            ShouldRaiseSelectedItemChangedEvent = true;
             //激发事件
             if (NodeMove != null)
             {
@@ -692,6 +716,7 @@ namespace WPFSuperTreeView
             {
                 return null;
             }
+            ShouldRaiseSelectedItemChangedEvent = true;
             ItemsControl parent = GetParent(nodeToBeCut);
             parent.Items.Remove(nodeToBeCut);
             return nodeToBeCut;
@@ -708,6 +733,7 @@ namespace WPFSuperTreeView
             {
                 return;
             }
+            ShouldRaiseSelectedItemChangedEvent = true;
             String oldPath = nodeToBeCut.Path;
             String newPath = attachToNode.Path + nodeToBeCut.HeaderText + "/";
             tree.BeginInit();
@@ -738,11 +764,13 @@ namespace WPFSuperTreeView
 
         private void InnerTreeSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            
-            if (SelectedItemChanged != null)
+
+            if (SelectedItemChanged != null && ShouldRaiseSelectedItemChangedEvent)
             {
                 SelectedItemChanged(sender, e);
             }
+            
+          
         }
         /// <summary>
         /// 用于将内部TreeView的SelectedItemChanged事件导出到UserControl外部以方便使用
