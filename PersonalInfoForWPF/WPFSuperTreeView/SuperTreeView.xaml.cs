@@ -31,16 +31,60 @@ namespace WPFSuperTreeView
         public SuperTreeView()
         {
             InitializeComponent();
-            
+
+        }
+
+        public SuperTreeView(String EFConnectionString)
+        {
+            InitializeComponent();
+            this.EFConnectionString = EFConnectionString;
         }
         /// <summary>
-        /// 清除所有节点
+        /// 用于在数据库中更新相关路径
+        /// </summary>
+        private NodePathManager _nodePathManager = null;
+        public NodePathManager TreeNodePathManager
+        {
+            get
+            {
+                return _nodePathManager;
+            }
+            set
+            {
+                _nodePathManager = value;
+            }
+        }
+        /// <summary>
+        /// 用于存储树节点的数据库连接字段，只有设置此属性，才能获得从数据库中存取数据的能力
+        /// </summary>
+        private String _EFConnectionString = "";
+        public String EFConnectionString
+        {
+            get
+            {
+                return _EFConnectionString;
+            }
+            set
+            {
+                _EFConnectionString = value;
+                _nodePathManager = new NodePathManager(_EFConnectionString);
+                _repository=new MainTreeRepository(_EFConnectionString);
+            }
+        }
+        /// <summary>
+        /// 用于存取数据库
+        /// </summary>
+        private MainTreeRepository _repository = null;
+
+        /// <summary>
+        /// 清除所有节点,未清除数据库
         /// </summary>
         public void ClearAllNodes()
         {
             tree.Items.Clear();
             nodesManager.nodes.Clear();
             ShouldRaiseSelectedItemChangedEvent = true;
+            
         }
 
         /// <summary>
@@ -50,13 +94,13 @@ namespace WPFSuperTreeView
         /// <returns></returns>
         public TreeViewIconsItem ShowNode(String NodePath)
         {
-            
+
             if (String.IsNullOrEmpty(NodePath))
             {
                 return null;
             }
             //要显示的节点就是当前节点
-            TreeViewIconsItem curSelectedNode=tree.SelectedItem as TreeViewIconsItem;
+            TreeViewIconsItem curSelectedNode = tree.SelectedItem as TreeViewIconsItem;
             if (curSelectedNode != null && curSelectedNode.Path == NodePath)
             {
                 return null;
@@ -72,9 +116,9 @@ namespace WPFSuperTreeView
                 node.Focus();
                 return node;
             }
-           
-                return null;
-           
+
+            return null;
+
         }
 
         /// <summary>
@@ -88,6 +132,7 @@ namespace WPFSuperTreeView
         {
             get { return _nodesManager.nodes.Count; }
         }
+
         private TreeViewNodesManager _nodesManager = new TreeViewNodesManager();
         /// <summary>
         /// 提供树节点集合的管理工作
@@ -151,7 +196,7 @@ namespace WPFSuperTreeView
         /// <returns></returns>
         public bool IsNodeExisted(String nodePath)
         {
-            TreeViewIconsItem item=Nodes.FirstOrDefault(p => p.Path == nodePath);
+            TreeViewIconsItem item = Nodes.FirstOrDefault(p => p.Path == nodePath);
             return item != null;
         }
 
@@ -231,10 +276,14 @@ namespace WPFSuperTreeView
             {
                 treeNode.IsSelected = true;
             }
-            
+
             //更新树的存储
             String treeXml = saveToXmlString();
-            MainTreeRepository.SaveTree(treeXml);
+            if (_repository != null)
+            {
+                _repository.SaveTree(treeXml);
+            }
+         
 
             return treeNode;
 
@@ -247,7 +296,7 @@ namespace WPFSuperTreeView
         /// <returns></returns>
         public TreeViewIconsItem AddRoot(String nodeText, NodeDataObject nodeDataObject)
         {
-            if (String.IsNullOrEmpty(nodeText) )
+            if (String.IsNullOrEmpty(nodeText))
             {
                 return null;
             }
@@ -261,7 +310,7 @@ namespace WPFSuperTreeView
         /// <returns></returns>
         public TreeViewIconsItem AddChild(String nodeText, NodeDataObject nodeDataObject)
         {
-            if (String.IsNullOrEmpty(nodeText) ||  tree.SelectedItem == null)
+            if (String.IsNullOrEmpty(nodeText) || tree.SelectedItem == null)
             {
                 return null;
             }
@@ -308,8 +357,12 @@ namespace WPFSuperTreeView
             //更新内存中的节点集合
             nodesManager.DeleteNode(selectedNode);
             //更新数据库
-            NodePathManager.DeleteDataInfoObjectOfNodeAndItsChildren(selectedNode.Path);
-            
+            if (_nodePathManager != null)
+            {
+                _nodePathManager.DeleteDataInfoObjectOfNodeAndItsChildren(selectedNode.Path);
+            }
+           
+
         }
         #endregion
 
@@ -571,7 +624,7 @@ namespace WPFSuperTreeView
             int parentIndex = GetNodeIndex(parent);
             //查找爷爷节点
             ItemsControl grandfather = GetParent(parent);
-            String newPath="";
+            String newPath = "";
             //获取新路径
             if (grandfather == tree)
             {
@@ -592,13 +645,17 @@ namespace WPFSuperTreeView
             //插入成为父亲的兄弟节点
             grandfather.Items.Insert(parentIndex + 1, node);
 
-            node.Path=newPath;
+            node.Path = newPath;
             node.NodeData.DataItem.Path = newPath;
             //更新所有内存相关子节点集合的路径
             nodesManager.UpdateNodePath(oldPath, newPath);
-            //更新数据库中相关子节点的路径
-            NodePathManager.UpdateNodePath(oldPath, newPath);
-           
+            if (_nodePathManager != null)
+            {  
+                //更新数据库中相关子节点的路径
+            _nodePathManager.UpdateNodePath(oldPath, newPath);
+
+            }
+          
             node.IsSelected = true;
 
             tree.EndInit();
@@ -610,7 +667,7 @@ namespace WPFSuperTreeView
                 {
                     MoveType = NodeMoveType.NodeMoveLeft,
                     Node = node,
-                    PrevPath=oldPath
+                    PrevPath = oldPath
                 };
                 NodeMove(node, e);
             }
@@ -647,20 +704,20 @@ namespace WPFSuperTreeView
 
             if (prevBrother != null)
             {
-               
+
                 newPath = prevBrother.Path + node.HeaderText + "/";
-                
+
             }
             else
             {
-                
+
                 newPath = nextBrother.Path + node.HeaderText + "/";
-                
+
             }
             if (IsNodeExisted(newPath))
             {
                 MessageBox.Show("已经存在相同路径的节点，不允许降级。");
-                return; 
+                return;
             }
 
 
@@ -682,13 +739,17 @@ namespace WPFSuperTreeView
                 node.NodeData.DataItem.Path = newPath;
                 nextBrother.IsExpanded = true;
             }
-          
-           
+
+
 
             //更新所有内存相关子节点集合的路径
             nodesManager.UpdateNodePath(oldPath, newPath);
-            //更新数据库中相关子节点的路径
-            NodePathManager.UpdateNodePath(oldPath, newPath);
+            if (_nodePathManager != null)
+            {
+                //更新数据库中相关子节点的路径
+                _nodePathManager.UpdateNodePath(oldPath, newPath);
+            }
+            
 
             node.IsSelected = true;
             tree.EndInit();
@@ -729,6 +790,53 @@ namespace WPFSuperTreeView
         /// <param name="attachToNode">将接收被剪切节点的那个节点</param>
         public void PasteNode(TreeViewIconsItem nodeToBeCut, TreeViewIconsItem attachToNode)
         {
+            //if (nodeToBeCut == null || attachToNode == null || nodeToBeCut.Parent != null)
+            //{
+            //    return;
+            //}
+            //ShouldRaiseSelectedItemChangedEvent = true;
+            //String oldPath = nodeToBeCut.Path;
+            //String newPath = attachToNode.Path + nodeToBeCut.HeaderText + "/";
+            //tree.BeginInit();
+            //attachToNode.Items.Add(nodeToBeCut);
+
+            ////更新所有内存相关子节点集合的路径
+            //nodesManager.UpdateNodePath(oldPath, newPath);
+            ////更新数据库中相关子节点的路径
+            //NodePathManager.UpdateNodePath(oldPath, newPath);
+
+            //tree.EndInit();
+            ////激发事件
+            //if (NodeMove != null)
+            //{
+            //    NodeMoveEventArgs e = new NodeMoveEventArgs
+            //    {
+            //        MoveType = NodeMoveType.NodePaste,
+            //        Node = nodeToBeCut,
+            //        PrevPath = oldPath
+            //    };
+            //    NodeMove(nodeToBeCut, e);
+            //}
+            PasteNode(nodeToBeCut, attachToNode, false);
+        }
+        /// <summary>
+        /// 粘贴节点并自动更新相关的内存,但不更新底层数据库
+        /// </summary>
+        /// <param name="nodeToBeCut"></param>
+        /// <param name="attachToNode"></param>
+        public void PasteNodeCrossDB(TreeViewIconsItem nodeToBeCut, TreeViewIconsItem attachToNode)
+        {
+            PasteNode(nodeToBeCut, attachToNode, true);
+        }
+
+        /// <summary>
+        /// 粘贴节点并自动更新相关的内存,AutoUpdateDB用于控制是否更新底层数据库中的记录
+        /// </summary>
+        /// <param name="nodeToBeCut"></param>
+        /// <param name="attachToNode"></param>
+        /// <param name="AutoUpdateDB"></param>
+        private void PasteNode(TreeViewIconsItem nodeToBeCut, TreeViewIconsItem attachToNode, bool IsCrossDB)
+        {
             if (nodeToBeCut == null || attachToNode == null || nodeToBeCut.Parent != null)
             {
                 return;
@@ -737,24 +845,59 @@ namespace WPFSuperTreeView
             String oldPath = nodeToBeCut.Path;
             String newPath = attachToNode.Path + nodeToBeCut.HeaderText + "/";
             tree.BeginInit();
-            attachToNode.Items.Add(nodeToBeCut);
-            
-            //更新所有内存相关子节点集合的路径
-            nodesManager.UpdateNodePath(oldPath, newPath);
-            //更新数据库中相关子节点的路径
-            NodePathManager.UpdateNodePath(oldPath, newPath);
 
-            tree.EndInit();
-            //激发事件
-            if (NodeMove != null)
+            if (!IsCrossDB)
             {
-                NodeMoveEventArgs e = new NodeMoveEventArgs
+                attachToNode.Items.Add(nodeToBeCut);
+
+                //更新所有内存相关子节点集合的路径
+                nodesManager.UpdateNodePath(oldPath, newPath);
+                if (_nodePathManager != null)
                 {
-                    MoveType = NodeMoveType.NodePaste,
-                    Node = nodeToBeCut,
-                    PrevPath = oldPath
-                };
-                NodeMove(nodeToBeCut, e);
+                    //更新数据库中相关子节点的路径
+                    _nodePathManager.UpdateNodePath(oldPath, newPath);
+                }
+              
+                tree.EndInit();
+                //激发事件
+                if (NodeMove != null)
+                {
+                    NodeMoveEventArgs e = new NodeMoveEventArgs
+                    {
+                        MoveType = NodeMoveType.NodePaste,
+                        Node = nodeToBeCut,
+                        PrevPath = oldPath
+                    };
+                    NodeMove(nodeToBeCut, e);
+                }
+            }
+            else
+            {
+                //跨数据库的粘贴
+                attachToNode.Items.Add(nodeToBeCut);
+                updateChildNodePath(attachToNode.Path, nodeToBeCut);
+                             
+                tree.EndInit();
+                
+            }
+        }
+        /// <summary>
+        /// 为跨数据库粘贴的树节点更新其路径信息
+        /// </summary>
+        /// <param name="newRootPath"></param>
+        /// <param name="nodeAttachedToNewParent"></param>
+        private void updateChildNodePath(String newRootPath, TreeViewIconsItem nodeAttachedToNewParent)
+        {
+            
+            if (nodeAttachedToNewParent != null)
+            {
+                String oldChildTreeRootPath = nodeAttachedToNewParent.Path;
+                nodeAttachedToNewParent.Path = newRootPath + nodeAttachedToNewParent.HeaderText+"/";
+                nodesManager.nodes.Add(nodeAttachedToNewParent);
+                foreach (var child in nodeAttachedToNewParent.Items)
+                {
+                    updateChildNodePath(nodeAttachedToNewParent.Path, (child as TreeViewIconsItem));
+                }
             }
         }
 
@@ -769,8 +912,8 @@ namespace WPFSuperTreeView
             {
                 SelectedItemChanged(sender, e);
             }
-            
-          
+
+
         }
         /// <summary>
         /// 用于将内部TreeView的SelectedItemChanged事件导出到UserControl外部以方便使用
@@ -786,7 +929,7 @@ namespace WPFSuperTreeView
             {
                 return tree.SelectedItem as TreeViewIconsItem;
             }
-            
+
         }
         #endregion
 
@@ -802,16 +945,13 @@ namespace WPFSuperTreeView
             {
                 return null;
             }
-            NodeDataObject nodeDataObject = NodeFactory.CreateDataInfoNode(element.Attribute("NodeType").Value);
+            NodeDataObject nodeDataObject = NodeFactory.CreateDataInfoNode(element.Attribute("NodeType").Value,EFConnectionString);
             TreeViewIconsItem node = new TreeViewIconsItem(this, nodeDataObject);
             node.HeaderText = element.Attribute("Title").Value;
             if (element.Attribute("Foreground") != null)
             {
                 String color = element.Attribute("Foreground").Value;
-                //if (color == "#FFFFFFFF")
-                //{
-                //    Console.WriteLine("White!");
-                //}
+                
                 node.MyForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
             }
             else
@@ -820,7 +960,7 @@ namespace WPFSuperTreeView
                 node.Foreground = Brushes.Black;
             }
 
-            if (element.Attribute("FontWeight")!=null)
+            if (element.Attribute("FontWeight") != null)
             {
                 String FontWeight = element.Attribute("FontWeight").Value;
                 if (FontWeight != "Normal")
@@ -831,42 +971,39 @@ namespace WPFSuperTreeView
                 {
                     node.FontWeight = FontWeights.Normal;
                 }
-               
+
             }
             node.Icon = nodeDataObject.DataItem.NormalIcon;
             return node;
         }
-        
+
         private XElement CreateXElementFromTreeViewIconsItem(TreeViewIconsItem node)
         {
             XElement element = new XElement("TreeNode");
-            element.SetAttributeValue("Title",node.HeaderText);
+            element.SetAttributeValue("Title", node.HeaderText);
             element.SetAttributeValue("NodeType", node.NodeData.DataItem.NodeType);
             element.SetAttributeValue("FontWeight", node.FontWeight);
             if (node.Foreground != Brushes.White)
             {
                 element.SetAttributeValue("Foreground", node.MyForeground);
             }
-            //else
-            //{
-            //    Console.WriteLine("White!");
-            //}
             
+
             return element;
         }
 
-        private void CreateXmlTreeFromTreeViewIconsItem(TreeViewIconsItem rootNode,XElement element)
+        private void CreateXmlTreeFromTreeViewIconsItem(TreeViewIconsItem rootNode, XElement element)
         {
-           XElement tempElement=null;
+            XElement tempElement = null;
 
             foreach (var item in rootNode.Items)
             {
                 //加入所有子节点
-                tempElement=CreateXElementFromTreeViewIconsItem(item as TreeViewIconsItem);
+                tempElement = CreateXElementFromTreeViewIconsItem(item as TreeViewIconsItem);
                 element.Add(tempElement);
                 CreateXmlTreeFromTreeViewIconsItem(item as TreeViewIconsItem, tempElement);
             }
-            
+
         }
         /// <summary>
         /// 提取TreeView中的所有节点，创建XElement对象树
@@ -881,9 +1018,9 @@ namespace WPFSuperTreeView
                 firstLevelNode = CreateXElementFromTreeViewIconsItem(item as TreeViewIconsItem);
                 CreateXmlTreeFromTreeViewIconsItem(item as TreeViewIconsItem, firstLevelNode);
                 rootElement.Add(firstLevelNode);
-                
+
             }
-          
+
             return rootElement;
         }
         /// <summary>
@@ -893,11 +1030,22 @@ namespace WPFSuperTreeView
         public String saveToXmlString()
         {
             XElement tree = CreateXmlTree();
-            using(MemoryStream mem=new MemoryStream()){
+            using (MemoryStream mem = new MemoryStream())
+            {
                 tree.Save(mem);
                 return Encoding.UTF8.GetString(mem.ToArray());
             }
-            
+
+        }
+        /// <summary>
+        /// 将树保存到底层数据库中
+        /// </summary>
+        public void SaveToDB()
+        {
+            if (_repository != null)
+            {
+                _repository.SaveTree(saveToXmlString());
+            }
         }
         /// <summary>
         /// 将整个TreeView中的所有节点转换为XML字串并保存到文件中
@@ -942,8 +1090,8 @@ namespace WPFSuperTreeView
         /// <returns></returns>
         private TreeViewIconsItem CreateTree(XElement rootElement)
         {
-            
-           
+
+
 
             TreeViewIconsItem root = CreateTreeViewNodeFromXElement(rootElement);
             root.Path = "/" + root.HeaderText + "/";
@@ -951,7 +1099,7 @@ namespace WPFSuperTreeView
             nodesManager.nodes.Add(root);
             AddXmlNodeToTree(rootElement, root);
             return root;
-            
+
         }
         /// <summary>
         /// 从Xml文件中装入树
@@ -966,19 +1114,19 @@ namespace WPFSuperTreeView
             }
             tree.Items.Clear();
             nodesManager.nodes.Clear();
-            String xml=File.ReadAllText(FileName);
+            String xml = File.ReadAllText(FileName);
             XElement xmlTree = XElement.Parse(xml);
             //XElement xmlTree = XElement.Load(FileName);
-            
+
             foreach (var item in xmlTree.Elements())
             {
 
                 TreeViewIconsItem root = CreateTree(item);
-                 tree.Items.Add(root);
+                tree.Items.Add(root);
             }
-          
+
         }
-       
+
         /// <summary>
         /// 从Xml字串中装入树
         /// </summary>
@@ -1004,7 +1152,14 @@ namespace WPFSuperTreeView
                 tree.Items.Add(root);
             }
         }
+        /// <summary>
+        /// 从数据库中装载树
+        /// </summary>
+        public String LoadTreeXMLFromDB()
+        {
 
+           return _repository.GetTreeFromDB();
+        }
         #endregion
     }
 }

@@ -118,5 +118,11 @@ namespace OnlyTextNode
         {
             return;
         }
+
+
+        public void SetRootControlDataAccessObj(IDataAccess accessObj)
+        {
+            return;
+        }
     }
 }

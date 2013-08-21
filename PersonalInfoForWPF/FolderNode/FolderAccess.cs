@@ -11,7 +11,16 @@ namespace FolderNode
 {
     public class FolderAccess:IDataAccess
     {
-        private FolderRepository repository = new FolderRepository();
+        private FolderRepository repository = null;
+        //public FolderAccess()
+        //{
+        //    repository = new FolderRepository(DALConfig.EFConnectString);
+        //}
+
+        public FolderAccess(String EFConnectionString)
+        {
+            repository = new FolderRepository(EFConnectionString);
+        }
         /// <summary>
         /// 新建一个Folder记录，不包容任何文件
         /// </summary>

@@ -200,7 +200,13 @@ namespace WPFSuperRichTextBox
                 obj = RichTextBox1.Selection.GetPropertyValue(TextElement.FontFamilyProperty);
 
             if (obj is FontFamily) //设置字体下拉框选项为当前字体
-                this.cboFontFamilies.SelectedItem = MySuperEditorHelper.GetLocaliteFontName((FontFamily)obj);
+            {
+                String FontName=MySuperEditorHelper.GetLocaliteFontName((FontFamily)obj);
+                //此句居然会引发TabControl的SelectionChanged事件？真是诡异！
+                cboFontFamilies.Text =FontName ;
+               
+            }
+                
 
         }
 
@@ -265,7 +271,7 @@ namespace WPFSuperRichTextBox
             if (ret == WinForms.DialogResult.OK)
             {
                 rtfManager.LoadOrInsertFile(false, OpenFileDialog1.FileName);
-                //  this.Title = rtfManager.CurFileName + "-" + ProgramName;  //设定窗口标题
+               
 
             }
         }
@@ -281,7 +287,7 @@ namespace WPFSuperRichTextBox
             if (ret == WinForms.DialogResult.OK)
             {
                 rtfManager.LoadOrInsertFile(true, OpenFileDialog1.FileName);
-                // this.Title = rtfManager.CurFileName + "-" + ProgramName;  //设定窗口标题
+              
             }
         }
 
@@ -292,7 +298,7 @@ namespace WPFSuperRichTextBox
         /// <param name="e"></param>
         private void OnSave(object sender, ExecutedRoutedEventArgs e)
         {
-            //rtfManager.SaveToFile(true);
+            
             if (OnSaveDocument != null)
             {
                 OnSaveDocument();
@@ -440,8 +446,11 @@ namespace WPFSuperRichTextBox
         }
         private void cboFontFamilies_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RichTextBox1.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, cboFontFamilies.SelectedItem);
-            RichTextBox1.Focus();
+            
+                RichTextBox1.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, cboFontFamilies.SelectedItem);
+                RichTextBox1.Focus();
+                e.Handled = true;
+            
         }
 
 
@@ -522,7 +531,8 @@ namespace WPFSuperRichTextBox
         private void CanSetSubscript(object sender, CanExecuteRoutedEventArgs args)
         {
             if (RichTextBox1 != null)
-                args.CanExecute = !(String.IsNullOrEmpty(RichTextBox1.Selection.Text));
+                // args.CanExecute = !(String.IsNullOrEmpty(RichTextBox1.Selection.Text));
+                args.CanExecute = !(RichTextBox1.Selection.IsEmpty);
             else
                 args.CanExecute = false;
         }
@@ -790,11 +800,11 @@ namespace WPFSuperRichTextBox
             SynchronzieItalic();
             //切换下划线选项
             SychronzieUnderline();
-            //以下这两个同步状态占用过多时间，改为鼠标单击时再调用
+            ShowFontSize();
+
             SynchronzieFontFamilies();
             SynchronzieTextAligmentButton();
             SynchronizeSuperscriptAndSubscriptButton();
-            ShowFontSize();
         }
 
     }

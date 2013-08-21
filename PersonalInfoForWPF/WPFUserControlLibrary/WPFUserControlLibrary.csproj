@@ -52,6 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorBrushList.cs" />
+    <Compile Include="InfoTab\InfoTabControl.xaml.cs">
+      <DependentUpon>InfoTabControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InfoTab\InfoTabHeader.xaml.cs">
+      <DependentUpon>InfoTabHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InfoTab\TabPageClosedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -79,10 +86,21 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="InfoTab\InfoTabControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="InfoTab\InfoTabHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SuperTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="InfoTab\Image\close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

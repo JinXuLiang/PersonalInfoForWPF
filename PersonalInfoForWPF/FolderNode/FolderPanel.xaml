@@ -28,6 +28,6 @@
             </StackPanel>
         </Grid>
    
-    <WPFSuperRichTextBox:SuperWPFRichTextBox LostFocus="OnLostFocus" x:Name="richTextBox1"/>    
+    <WPFSuperRichTextBox:SuperWPFRichTextBox PreviewLostKeyboardFocus="richTextBox1_PreviewLostKeyboardFocus" x:Name="richTextBox1"/>    
     </DockPanel>
 </UserControl>

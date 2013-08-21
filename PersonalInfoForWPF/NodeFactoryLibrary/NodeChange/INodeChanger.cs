@@ -12,6 +12,6 @@ namespace NodeFactoryLibrary
     public interface INodeChanger
     {
         String ChangeToNodeType{get;}
-        NodeDataObject ChangeTo(NodeDataObject sourceObject);
+        NodeDataObject ChangeTo(NodeDataObject sourceObject,String EFConnectionString);
     }
 }

@@ -372,17 +372,23 @@ namespace WPFSuperTreeView
             belongToTreeView.nodesManager.UpdateNodePath(oldPath, newPath);
 
             //更新数据库中相关子节点的路径
-            NodePathManager.UpdateNodePath(oldPath, newPath);
+            if (belongToTreeView.TreeNodePathManager!= null)
+            {
+                belongToTreeView.TreeNodePathManager.UpdateNodePath(oldPath, newPath);
+            }
+            
 
             //更新数据库中树
-            String treeXml = belongToTreeView.saveToXmlString();
-            MainTreeRepository.SaveTree(treeXml);
-            //在独立的线程中完成数据更新任务
-            Thread thread = new Thread(() =>
-            {
-                MainTreeRepository.SaveTree(treeXml);
-            });
-            thread.Start();
+            belongToTreeView.SaveToDB();
+            //String treeXml = belongToTreeView.saveToXmlString();
+
+            //(new MainTreeRepository()).SaveTree(treeXml);
+            ////在独立的线程中完成数据更新任务
+            //Thread thread = new Thread(() =>
+            //{
+            //    (new MainTreeRepository()).SaveTree(treeXml);
+            //});
+            //thread.Start();
             
         }
         /// <summary>

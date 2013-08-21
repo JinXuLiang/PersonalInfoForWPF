@@ -57,6 +57,11 @@ namespace InterfaceLibrary
         /// 强制刷新数据对象（通常是使用用户界面上控件的当前值刷新本对象的字段值）
         /// </summary>
         void RefreshMe();
+        /// <summary>
+        /// 设置节点所关联的可视化界面的数据存取对象
+        /// </summary>
+        /// <param name="accessObj"></param>
+        void SetRootControlDataAccessObj(IDataAccess accessObj);
        
     }
 }

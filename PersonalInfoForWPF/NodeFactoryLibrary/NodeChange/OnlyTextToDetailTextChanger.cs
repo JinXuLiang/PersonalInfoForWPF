@@ -17,9 +17,9 @@ namespace NodeFactoryLibrary.NodeChange
             get { return "DetailText"; }
         }
 
-        public NodeDataObject ChangeTo(NodeDataObject sourceObject)
+        public NodeDataObject ChangeTo(NodeDataObject sourceObject, String EFConnectionString)
         {
-            NodeDataObject dataObject = NodeFactory.CreateDataInfoNode("DetailText");
+            NodeDataObject dataObject = NodeFactory.CreateDataInfoNode("DetailText", EFConnectionString);
             dataObject.DataItem.Path = sourceObject.DataItem.Path;
             //在数据库中创建对象
             dataObject.AccessObject.Create(dataObject.DataItem);

@@ -7,10 +7,13 @@
              mc:Ignorable="d" 
              Background="AliceBlue"
              d:DesignHeight="600" d:DesignWidth="600">
-    
+   
+      
+   
         <WPFSuperRichTextBox:SuperWPFRichTextBox 
             x:Name="richTextBox1"
-            LostFocus="OnLostFocus"
+           
+            PreviewLostKeyboardFocus="richTextBox1_PreviewLostKeyboardFocus"
             HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"/>
-    
+   
 </UserControl>

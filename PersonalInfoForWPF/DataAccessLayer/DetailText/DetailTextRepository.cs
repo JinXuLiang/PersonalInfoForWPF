@@ -12,6 +12,20 @@ namespace DetailTextNode
     /// </summary>
     public class DetailTextRepository
     {
+        /// <summary>
+        /// 用于创建数据库连接的连接字符串（Entity framework格式）
+        /// </summary>
+        private String EFConnectionString = "";
+
+        //public DetailTextRepository()
+        //{
+        //    EFConnectionString = DALConfig.EFConnectString;
+        //}
+
+        public DetailTextRepository(String EFConnectionString)
+        {
+            this.EFConnectionString = EFConnectionString;
+        }
        
 
         /// <summary>
@@ -25,16 +39,17 @@ namespace DetailTextNode
             {
                 return -1;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 context.DetailTextDBs.Add(dbObj);
+               
                 return context.SaveChanges();
             }
         }
 
         public void DeleteAll()
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 context.Database.ExecuteSqlCommand("delete from DetailTextDB ");
             }
@@ -42,7 +57,7 @@ namespace DetailTextNode
 
         public int Delete(int id)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 return context.Database.ExecuteSqlCommand("delete from DetailTextDB where ID={0}", id);
             }
@@ -54,7 +69,7 @@ namespace DetailTextNode
             {
                 return 0;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 DetailTextDB oldObj = context.DetailTextDBs.FirstOrDefault(o => o.ID == dbObj.ID);
                 if (oldObj != null)
@@ -86,7 +101,7 @@ namespace DetailTextNode
             {
                 return null;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 DetailTextDB dbobj = context.DetailTextDBs.FirstOrDefault(o => o.Path == nodePath);
                 if (dbobj != null)
@@ -105,7 +120,7 @@ namespace DetailTextNode
         /// <param name="newPath"></param>
         public void UpdateNodePaths(String oldPath, String newPath)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from item in context.DetailTextDBs
                             where item.Path.StartsWith(oldPath)
@@ -125,7 +140,7 @@ namespace DetailTextNode
         /// <returns></returns>
         public int DeleteNodeAndItsChild(String nodePath)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 return context.Database.ExecuteSqlCommand("Delete from DetailTextDB where Path like {0}", nodePath + "%");
             }

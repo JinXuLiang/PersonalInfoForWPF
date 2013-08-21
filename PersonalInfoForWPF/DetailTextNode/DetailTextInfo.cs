@@ -51,7 +51,9 @@ namespace DetailTextNode
 
         public System.Windows.Controls.Control RootControl
         {
-            get { return DetailTextResources.RootControl; }
+            get {
+               return DetailTextResources.RootControl; 
+            }
         }
 
         public bool ShouldEmbedInHostWorkingBench
@@ -79,6 +81,14 @@ namespace DetailTextNode
         public void RefreshMe()
         {
             DetailTextResources.RootControl.UpdateDataObjectInMemory();
+        }
+        /// <summary>
+        /// 指定节点面板的数据存取对象，通过它将数据库保存到底层存储机构中
+        /// </summary>
+        /// <param name="accessObj"></param>
+        public void SetRootControlDataAccessObj(IDataAccess accessObj)
+        {
+            DetailTextResources.RootControl.accessObj = accessObj as DetailTextAccess;
         }
     }
 }

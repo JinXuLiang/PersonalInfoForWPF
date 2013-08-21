@@ -13,6 +13,21 @@ namespace DataAccessLayer.Folder
     public class FolderRepository
     {
         /// <summary>
+        /// 用于创建数据库连接的连接字符串（Entity framework格式）
+        /// </summary>
+        private String EFConnectionString = "";
+
+        //public FolderRepository()
+        //{
+        //    EFConnectionString = DALConfig.EFConnectString;
+        //}
+
+        public FolderRepository(String EFConnectionString)
+        {
+            this.EFConnectionString = EFConnectionString;
+        }
+
+        /// <summary>
         /// 更新节点的路径：查找所有路径以oldPath打头的记录，将其路径替换为以newPath打头
         /// 有效路径前后应该以“/”包围
         /// </summary>
@@ -20,7 +35,7 @@ namespace DataAccessLayer.Folder
         /// <param name="newPath"></param>
         public void UpdateNodePaths(String oldPath, String newPath)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from item in context.FolderDBs
                             where item.Path.StartsWith(oldPath)
@@ -45,7 +60,7 @@ namespace DataAccessLayer.Folder
             {
                 return 0;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 context.FolderDBs.Add(FolderObj);
                 return context.SaveChanges();
@@ -61,7 +76,7 @@ namespace DataAccessLayer.Folder
             {
                 return 0;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 FolderDB folderToModify = context.FolderDBs.FirstOrDefault(p => p.ID == folder.ID);
                 if (folderToModify != null)
@@ -86,7 +101,7 @@ namespace DataAccessLayer.Folder
         /// <returns></returns>
         public List<FolderDB> GetAllFolderDBWithItsDiskFile()
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from folder in context.FolderDBs.Include("DiskFiles")
                             select folder;
@@ -101,7 +116,7 @@ namespace DataAccessLayer.Folder
         /// <returns></returns>
         public List<FolderDB> GetAllFolderDBWithoutItsDiskFile()
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from folder in context.FolderDBs
                             select folder;
@@ -122,7 +137,7 @@ namespace DataAccessLayer.Folder
             {
                 return null;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 return context.FolderDBs.Include("DiskFiles").FirstOrDefault(p => p.Path == path);
             }
@@ -139,7 +154,7 @@ namespace DataAccessLayer.Folder
             {
                 return null;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 return context.FolderDBs.FirstOrDefault(p => p.Path == path);
             }
@@ -156,7 +171,7 @@ namespace DataAccessLayer.Folder
                 return null;
             }
             ObservableCollection<DBFileInfo> fileInfos = new ObservableCollection<DBFileInfo>();
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from folder in context.FolderDBs
                             where folder.Path == path
@@ -195,7 +210,7 @@ namespace DataAccessLayer.Folder
             {
                 return 0;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 FolderDB folder = context.FolderDBs.FirstOrDefault(p => p.Path == folderDBPath);
                 if (folder == null)
@@ -219,7 +234,7 @@ namespace DataAccessLayer.Folder
             {
                 return;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 FolderDB folder = context.FolderDBs.FirstOrDefault(p => p.Path == FolderDBPath);
                 if (folder == null)
@@ -243,7 +258,7 @@ namespace DataAccessLayer.Folder
         /// <param name="path"></param>
         public int DeleteFolderDBAndItsChildByPath(String path)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from folder in context.FolderDBs
                             where folder.Path.StartsWith(path)
@@ -272,7 +287,7 @@ namespace DataAccessLayer.Folder
         /// <returns></returns>
         public int DeleteFolderDB(String path)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 var query = from folder in context.FolderDBs
                             where folder.Path == path
@@ -298,7 +313,7 @@ namespace DataAccessLayer.Folder
         /// </summary>
         public void DeleteAllFolderRecords()
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 List<FolderDB> folders = context.FolderDBs.ToList();
                 foreach (var folder in folders)
@@ -333,7 +348,7 @@ namespace DataAccessLayer.Folder
             {
                 return;
             }
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 FolderDB folder = context.FolderDBs.FirstOrDefault(p => p.Path == folderDBPath);
                 if (folder == null)
@@ -351,7 +366,6 @@ namespace DataAccessLayer.Folder
                         context.Entry(file).State = EntityState.Deleted;
                     }
 
-
                 }
                 context.SaveChanges();
             }
@@ -367,7 +381,7 @@ namespace DataAccessLayer.Folder
         /// <returns></returns>
         public byte[] getFileContent(int fileID)
         {
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 DiskFile file = context.DiskFiles.FirstOrDefault(f => f.ID == fileID);
                 if (file != null)

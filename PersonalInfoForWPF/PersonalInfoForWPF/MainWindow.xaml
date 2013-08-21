@@ -75,7 +75,7 @@
                 <MenuItem.Items>
                     <MenuItem Header="系统设置..." Command="local:PersonalInfoCommands.ShowConfigWin"/>
                     <Separator/>
-                    <MenuItem Header="切换资料库" Command="local:PersonalInfoCommands.ChangeDB"/>
+                    <MenuItem Header="打开资料库" Command="local:PersonalInfoCommands.ChangeDB"/>
                     <MenuItem Header="创建新资料库" Command="local:PersonalInfoCommands.CopyDB" />
                     <Separator/>
                     <MenuItem Header="退出" Command="local:PersonalInfoCommands.ExitApplication"/>
@@ -246,88 +246,12 @@
             </ToolBar>
         </ToolBarTray>
         <!--状态条-->
-      
        <DockPanel DockPanel.Dock="Bottom"  VerticalAlignment="Bottom"  >
-            <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right" Text="PersonalInfo ver 1.0 开发:金旭亮 " VerticalAlignment="Center" />
-            <TextBlock x:Name="tbInfo" Text="a" HorizontalAlignment="Stretch" />
+            <TextBlock DockPanel.Dock="Right" Margin="0 0 5 0" HorizontalAlignment="Right" Text="PersonalInfo ver 2.0 开发:金旭亮 " VerticalAlignment="Center" />
+            <TextBlock Margin="5 0 0 0" x:Name="tbInfo" Text="a" HorizontalAlignment="Stretch" />
         </DockPanel>
-        
-
-        <Grid   >
-
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <!--树控件 -->
-            <WPFSuperTreeView:SuperTreeView 
-                x:Name="treeView1" Grid.Column="0" Margin="10" 
-                VerticalAlignment="Stretch"  Background="#FFE6D2D2" 
-                SelectedItemChanged="OnTreeViewSelectedItemChanged" 
-                ContextMenuOpening="treeView1_ContextMenuOpening"
-                PreviewMouseRightButtonDown="treeView1_PreviewMouseRightButtonDown"
-                PreviewKeyDown="treeView1_PreviewKeyDown"
-             >
-                <WPFSuperTreeView:SuperTreeView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="local:PersonalInfoCommands.CopyNodeText" Header="复制节点文本"/>
-                        <MenuItem Command="local:PersonalInfoCommands.ExpandAllNode" Header="展开全部子树"/>
-                        <Separator/>
-                        <MenuItem Command="local:PersonalInfoCommands.CutNode" Header="剪切节点"/>
-                        <MenuItem Command="local:PersonalInfoCommands.PasteNode" Header="粘贴节点"/>
-                        <Separator/>
-                        <MenuItem Header="增加子节点">
-                            <MenuItem Header="纯文本型（儿子）" Command="local:PersonalInfoCommands.AddChild_OnlyText" />
-                            <MenuItem Header="详细信息型（儿子）" Command="local:PersonalInfoCommands.AddChild_DetailText"/>
-                            <MenuItem Header="文件夹型（儿子）" Command="local:PersonalInfoCommands.AddChild_Folder"/>
-                        </MenuItem>
-                        <MenuItem Header="增加兄弟节点">
-                            <MenuItem.Items>
-                                <MenuItem Header="纯文本型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_OnlyText" />
-                                <MenuItem Header="详细信息型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_DetailText"/>
-                                <MenuItem Header="文件夹型（兄弟）" Command="local:PersonalInfoCommands.AddSibling_Folder"/>
-                            </MenuItem.Items>
-
-                        </MenuItem>
-                        <MenuItem Header="增加一级节点">
-                            <MenuItem.Items>
-                                <MenuItem Header="纯文本型" Command="local:PersonalInfoCommands.AddRoot_OnlyText" />
-                                <MenuItem Header="详细信息型" Command="local:PersonalInfoCommands.AddRoot_DetailText"/>
-                                <MenuItem Header="文件夹型" Command="local:PersonalInfoCommands.AddRoot_Folder"/>
-                            </MenuItem.Items>
-                        </MenuItem>
-                        <MenuItem Command="local:PersonalInfoCommands.DeleteNode" Header="删除节点"/>
-                        <MenuItem Command="local:PersonalInfoCommands.RenameNode" Header="节点改名"/>
-                        <Separator/>
-                        <MenuItem Command="local:PersonalInfoCommands.MoveUp" Header="节点上移"/>
-                        <MenuItem Command="local:PersonalInfoCommands.MoveDown" Header="节点下移"/>
-                        <MenuItem Command="local:PersonalInfoCommands.MoveLeft" Header="节点升级"/>
-                        <MenuItem Command="local:PersonalInfoCommands.MoveDown" Header="节点降级"/>
-                        <Separator/>
-                        <MenuItem Command="local:PersonalInfoCommands.ToOnlyText" Header="转换为纯文本型"  />
-                        <MenuItem Command="local:PersonalInfoCommands.ToDetailText"  Header="转换为详细信息型" />
-                        <MenuItem Command="local:PersonalInfoCommands.ToFolder"  Header="转换为文件夹型" />
-                        <Separator/>
-                        <MenuItem Header="设置节点文本粗体" Command="local:PersonalInfoCommands.ToggleNodeTextBold"/>
-                        <MenuItem Header="修改节点文本颜色"/>
-                        
-                    </ContextMenu>
-
-                </WPFSuperTreeView:SuperTreeView.ContextMenu>
-
-            </WPFSuperTreeView:SuperTreeView>
-
-            <!--左右面板分隔条 -->
-            <GridSplitter Focusable="true" Width="5" Grid.Column="1" Height="Auto" ShowsPreview="True" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-
-            <!--此控件用于承载节点面板 -->
-            <ContentControl Focusable="true"  x:Name="NodeUIContainer" Margin="10"  Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        </Grid>
+      <WPFUserControlLibrary:InfoTabControl x:Name="DBtabContainer" />
     </DockPanel>
 
+    
 </Window>

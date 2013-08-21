@@ -27,7 +27,11 @@ namespace FolderNode
     public partial class FolderPanel : UserControl
     {
 
-        private FolderAccess accessObj = new FolderAccess();
+        public FolderAccess accessObj
+        {
+            get;
+            set;
+        }
         public FolderPanel()
         {
             InitializeComponent();
@@ -104,31 +108,8 @@ namespace FolderNode
             ShowDataObjectInUI(_dataObject);
 
         }
-        /// <summary>
-        /// 失去焦点时，更新数据库
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnLostFocus(object sender, RoutedEventArgs e)
-        {
-            UpdateDataObjectInMemory();
-
-            Thread thread = new Thread(() =>
-            {
-                try
-                {
-                    accessObj.UpdateDataInfoObject(_dataObject);
-                }
-                catch (Exception ex)
-                {
-
-                    Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
-                }
-            });
-            thread.Start();
-
-        }
-
+        
+        
         private void btnAddFile_Click(object sender, RoutedEventArgs e)
         {
             WinForm.OpenFileDialog openFileDialog = new WinForm.OpenFileDialog();
@@ -208,6 +189,29 @@ namespace FolderNode
                     }
                 }
             }
+        }
+        /// <summary>
+        /// 失去焦点时，更新数据库
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void richTextBox1_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            UpdateDataObjectInMemory();
+
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    accessObj.UpdateDataInfoObject(_dataObject);
+                }
+                catch (Exception ex)
+                {
+
+                    Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
+                }
+            });
+            thread.Start();
         }
     }
 }

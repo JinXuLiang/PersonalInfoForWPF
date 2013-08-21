@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="MainTree\MainTreeRepository.cs" />
     <Compile Include="NodeDataSearchRepository.cs" />
+    <Compile Include="NodeMoveBetweenDBManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tree.cs">
       <DependentUpon>InfoCenterModel.tt</DependentUpon>

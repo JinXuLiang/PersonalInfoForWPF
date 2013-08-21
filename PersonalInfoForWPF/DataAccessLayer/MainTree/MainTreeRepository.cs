@@ -11,14 +11,28 @@ namespace DataAccessLayer.MainTree
     /// </summary>
     public class MainTreeRepository
     {
+         /// <summary>
+        /// 用于创建数据库连接的连接字符串（Entity framework格式）
+        /// </summary>
+        private String EFConnectionString = "";
+
+        //public MainTreeRepository()
+        //{
+        //    EFConnectionString = DALConfig.EFConnectString;
+        //}
+
+        public MainTreeRepository(String EFConnectionString)
+        {
+            this.EFConnectionString = EFConnectionString;
+        }
         /// <summary>
         /// 从数据库中提取树，如果找不到，则自动创建一棵空树保存到数据库中
         /// </summary>
         /// <returns></returns>
-        public static String GetTreeFromDB()
+        public String GetTreeFromDB()
         {
             String TreeXml = "";
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 Tree treeObj = context.Trees.FirstOrDefault();
                 if (treeObj != null)
@@ -40,7 +54,7 @@ namespace DataAccessLayer.MainTree
             return TreeXml;
         }
 
-        public static void SaveTree(String TreeXml)
+        public void SaveTree(String TreeXml)
         {
             if (String.IsNullOrEmpty(TreeXml))
             {
@@ -50,7 +64,7 @@ namespace DataAccessLayer.MainTree
             }
 
 
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                Tree treeObj = context.Trees.FirstOrDefault();
                if (treeObj != null)

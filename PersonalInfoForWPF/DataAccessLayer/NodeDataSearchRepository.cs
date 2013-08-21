@@ -15,10 +15,10 @@ namespace DataAccessLayer
         /// </summary>
         /// <param name="FindWhat"></param>
         /// <returns></returns>
-        public List<String> SearchDataNodeText(String FindWhat)
+        public List<String> SearchDataNodeText(String FindWhat,String EFConnectionString)
         {
 
-            using (InfocenterEntities context = new InfocenterEntities(DALConfig.ConnectString))
+            using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 List<String> result = new List<string>();
                 //搜索详细信息表

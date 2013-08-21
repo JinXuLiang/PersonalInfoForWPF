@@ -2,14 +2,37 @@
 using InterfaceLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace DetailTextNode
 {
     public class DetailTextAccess:IDataAccess
     {
-        private DetailTextRepository repository = new DetailTextRepository();
+        private String _conn = "";
+        public String EFConnectionString
+        {
+            get
+            {
+                return _conn;
+            }
+            
+            set
+            {
+                _conn = value;
+                
+            }
+        }
+       
+        public DetailTextAccess(String EFConnectionString)
+        {
+            this.EFConnectionString = EFConnectionString;
+            repository = new DetailTextRepository(EFConnectionString);
+        }
+
+        private DetailTextRepository repository = null;
 
         public int Create(IDataInfo dataInfoObject)
         {
@@ -62,6 +85,10 @@ namespace DetailTextNode
                 isNew = true;
 
             }
+            if (String.IsNullOrEmpty(dbobj.Text) == false && String.IsNullOrEmpty(obj.Text))
+            {
+                ShowWarningInfo(String.Format("更新节点{0}时，发现数据库记录中的Text字段不为空，但尝试写入一个空的字串，这有可能是个错误，特此提示。",obj.Path));
+            }
             dbobj.ModifyTime = obj.ModifyTime;
             dbobj.Text = obj.Text;
             dbobj.Path = obj.Path;
@@ -72,12 +99,14 @@ namespace DetailTextNode
             }
             else
             {
-               
                     return repository.Update(dbobj);
-               
-                
             }
             
+        }
+        [Conditional("DEBUG")]
+        private void ShowWarningInfo(String information)
+        {
+            MessageBox.Show(information);
         }
         /// <summary>
         /// 根据节点路径提取节点数据，如果未找到，返回null

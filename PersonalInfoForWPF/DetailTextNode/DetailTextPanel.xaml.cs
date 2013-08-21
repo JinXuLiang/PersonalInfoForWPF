@@ -22,7 +22,20 @@ namespace DetailTextNode
     /// </summary>
     public partial class DetailTextPanel : UserControl
     {
-        private DetailTextAccess accessObj = new DetailTextAccess();
+        private DetailTextAccess _access = null;
+        public DetailTextAccess accessObj
+        {
+            get
+            {
+                return _access;
+            }
+            set
+            {
+                _access = value;
+             
+            }
+
+        }
         public DetailTextPanel()
         {
             InitializeComponent();
@@ -38,13 +51,13 @@ namespace DetailTextNode
             UpdateDataObjectInMemory();
             Task task = new Task(() =>
             {
-               
+
                 try
                 {
                     accessObj.UpdateDataInfoObject(_dataObject);
 
                     Dispatcher.Invoke(new Action(() => { MessageBox.Show("数据己保存"); }));
-                   
+
                 }
                 catch (Exception ex)
                 {
@@ -54,7 +67,7 @@ namespace DetailTextNode
 
             });
             task.Start();
-           
+
         }
 
         private DetailTextInfo _dataObject = null;
@@ -65,13 +78,13 @@ namespace DetailTextNode
         {
             get
             {
-                UpdateDataObjectInMemory();   
+                UpdateDataObjectInMemory();
                 return _dataObject;
             }
             set
             {
                 _dataObject = value;
-                
+
             }
         }
         /// <summary>
@@ -92,28 +105,29 @@ namespace DetailTextNode
             _dataObject.RTFText = richTextBox1.Rtf;
             _dataObject.Text = richTextBox1.Text;
             _dataObject.ModifyTime = DateTime.Now;
-            
+
         }
         /// <summary>
         /// 刷新显示
         /// </summary>
         public void RefreshDisplay()
         {
-           //因为配置有可能改变，所以重设默认字体
-           richTextBox1.FontSize = SystemConfig.configArgus.RichTextEditorDefaultFontSize;
-           ShowDataObjectInUI(_dataObject);
-           
-        }
-        /// <summary>
-        /// 失去焦点时，更新数据库
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnLostFocus(object sender, RoutedEventArgs e)
-        {
-          
-            UpdateDataObjectInMemory();
+            //因为配置有可能改变，所以重设默认字体
+            richTextBox1.FontSize = SystemConfig.configArgus.RichTextEditorDefaultFontSize;
+            ShowDataObjectInUI(_dataObject);
 
+        }
+        
+        private void richTextBox1_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+           
+            //如果没有变化，就不要更新数据库了
+            if (_dataObject.RTFText == richTextBox1.Rtf)
+            {
+                return;
+            }
+            UpdateDataObjectInMemory();
+           
             Thread thread = new Thread(() =>
             {
                 try
@@ -122,14 +136,12 @@ namespace DetailTextNode
                 }
                 catch (Exception ex)
                 {
-
-                   // Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.Message); }));
                     Dispatcher.Invoke(new Action(() => { MessageBox.Show(ex.ToString()); }));
                 }
             });
             thread.Start();
-            
         }
-        
+
+
     }
 }

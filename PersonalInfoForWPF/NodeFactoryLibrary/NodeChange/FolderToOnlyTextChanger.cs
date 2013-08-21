@@ -13,9 +13,9 @@ namespace NodeFactoryLibrary.NodeChange
             get { return "OnlyText"; }
         }
 
-        public InterfaceLibrary.NodeDataObject ChangeTo(InterfaceLibrary.NodeDataObject sourceObject)
+        public InterfaceLibrary.NodeDataObject ChangeTo(InterfaceLibrary.NodeDataObject sourceObject, String EFConnectionString)
         {
-            NodeDataObject dataObject = NodeFactory.CreateDataInfoNode("OnlyText");
+            NodeDataObject dataObject = NodeFactory.CreateDataInfoNode("OnlyText", EFConnectionString);
             dataObject.DataItem.Path = sourceObject.DataItem.Path;
             //在数据库中删除记录
             sourceObject.AccessObject.DeleteDataInfoObject(sourceObject.DataItem);

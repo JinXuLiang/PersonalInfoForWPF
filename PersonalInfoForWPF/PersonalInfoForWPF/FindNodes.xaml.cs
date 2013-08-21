@@ -22,16 +22,25 @@ namespace PersonalInfoForWPF
     public partial class FindNodes : Window
     {
         private SuperTreeView _tree;
-        public FindNodes(SuperTreeView tree)
+        private String EFConnectionString;
+
+        public FindNodes()
         {
             InitializeComponent();
+           
+        }
+
+        public void SetTree(SuperTreeView tree)
+        {
             _tree = tree;
             //绑定显示数据
             dgNodes.ItemsSource = _tree.Nodes;
             //获取集合视图
             nodesCollectionView = CollectionViewSource.GetDefaultView(dgNodes.ItemsSource) as ListCollectionView;
             txtSearch.Focus();
+            EFConnectionString = _tree.EFConnectionString;
         }
+
         /// <summary>
         /// 用于实现搜索的集合视图对象
         /// </summary>
@@ -95,7 +104,7 @@ namespace PersonalInfoForWPF
                 return;
             }
             NodeDataSearchRepository repository = new NodeDataSearchRepository();
-            List<string> result = repository.SearchDataNodeText(FindWhat);
+            List<string> result = repository.SearchDataNodeText(FindWhat,EFConnectionString);
             nodesCollectionView.Filter = (item) => result.IndexOf((item as TreeViewIconsItem).NodeData.DataItem.Path) != -1;
 
         }

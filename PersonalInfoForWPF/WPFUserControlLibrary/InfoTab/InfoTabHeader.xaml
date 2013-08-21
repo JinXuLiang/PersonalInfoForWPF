@@ -1,0 +1,11 @@
+﻿<StackPanel x:Class="WPFUserControlLibrary.InfoTabHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Orientation="Horizontal" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <TextBlock VerticalAlignment="Center" x:Name="TabHeaderText" Margin="10 0 10 0">Tab 0</TextBlock>
+    <Image x:Name="imgCloseTabItem" MouseDown="imgCloseTabItem_MouseDown"  Source="image/close.png" Width="24" Height="24" HorizontalAlignment="Right" Margin="10 0 0 0" VerticalAlignment="Center"/>
+</StackPanel>

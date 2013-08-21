@@ -20,7 +20,7 @@ namespace NodeFactoryLibrary
         /// </summary>
         /// <param name="NodeType"></param>
         /// <returns></returns>
-        public static NodeDataObject CreateDataInfoNode(String NodeType)
+        public static NodeDataObject CreateDataInfoNode(String NodeType,String EFConnectionString)
         {
             NodeDataObject nodeDataObject = new NodeDataObject();
             if (NodeType == "OnlyText")
@@ -30,19 +30,55 @@ namespace NodeFactoryLibrary
             }
             if (NodeType == "Folder")
             {
-                nodeDataObject.DataItem = new FolderInfo();
+                FolderInfo info=new FolderInfo();
+                FolderAccess access=new FolderAccess(EFConnectionString);
+                info.SetRootControlDataAccessObj(access);
+
+                nodeDataObject.DataItem =info ;
                 //设置数据未装入标记
                 nodeDataObject.DataItem.HasBeenLoadFromStorage = false;
-                nodeDataObject.AccessObject = new FolderAccess();
+
+                nodeDataObject.AccessObject =access ;
+                
             }
             if (NodeType == "DetailText")
             {
-                nodeDataObject.DataItem=new DetailTextInfo();
+                DetailTextInfo info=new DetailTextInfo(); 
+                DetailTextAccess accessObj= new DetailTextAccess(EFConnectionString);
+
+                info.SetRootControlDataAccessObj(accessObj);
+                nodeDataObject.DataItem=info;
                 //设置数据未装入标记
                 nodeDataObject.DataItem.HasBeenLoadFromStorage = false;
-                nodeDataObject.AccessObject=new DetailTextAccess();
+               
+                nodeDataObject.AccessObject = accessObj;
+
+              
             }
             return nodeDataObject;
+        }
+        /// <summary>
+        /// 依据数据库连接字串（EntityFramework格式）创建合适的IDataAcess对象
+        /// </summary>
+        /// <param name="NodeType"></param>
+        /// <param name="EFConnectionString"></param>
+        /// <returns></returns>
+        public static IDataAccess CreateNodeAccessObject(String NodeType,String EFConnectionString)
+        {
+            NodeDataObject nodeDataObject = new NodeDataObject();
+            if (NodeType == "OnlyText")
+            {
+                return null;
+            }
+            if (NodeType == "Folder")
+            {
+                return new FolderAccess(EFConnectionString);
+            }
+            if (NodeType == "DetailText")
+            {
+                return new DetailTextAccess(EFConnectionString);
+            }
+            return null;
         }
     }
 }

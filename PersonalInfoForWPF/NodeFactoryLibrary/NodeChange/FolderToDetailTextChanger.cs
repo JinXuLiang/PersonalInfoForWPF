@@ -18,10 +18,10 @@ namespace NodeFactoryLibrary.NodeChange
             get { return "DetailText"; }
         }
 
-        public InterfaceLibrary.NodeDataObject ChangeTo(InterfaceLibrary.NodeDataObject sourceObject)
+        public InterfaceLibrary.NodeDataObject ChangeTo(InterfaceLibrary.NodeDataObject sourceObject, String EFConnectionString)
         {
             FolderInfo folderInfo = sourceObject.DataItem as FolderInfo;
-            NodeDataObject dataObject = NodeFactory.CreateDataInfoNode("DetailText");
+            NodeDataObject dataObject = NodeFactory.CreateDataInfoNode("DetailText", EFConnectionString);
             DetailTextInfo detailInfo = dataObject.DataItem as DetailTextInfo;
 
             detailInfo.Path = sourceObject.DataItem.Path;

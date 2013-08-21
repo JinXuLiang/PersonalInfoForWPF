@@ -19,29 +19,45 @@ namespace NodeFactoryLibrary
     /// </summary>
     public class NodePathManager
     {
+
+        public NodePathManager(String EFConnectionString)
+        {
+
+            DataAccessList = new List<IDataAccess>
+            {
+                new DetailTextAccess(EFConnectionString),new FolderAccess(EFConnectionString)
+            };
+        }
+
+
         /// <summary>
         /// 在此加入当前所有节点类型的数据存取对象
         /// </summary>
-        private static List<IDataAccess> DataAccessList = new List<IDataAccess>
-        {
-            new DetailTextAccess(),new FolderAccess()
-        };
-
-        public static void UpdateNodePath(String oldPath,String newPath)
+        private List<IDataAccess> DataAccessList = null;
+        /// <summary>
+        /// 在数据库中更新所有的节点路径
+        /// </summary>
+        /// <param name="oldPath"></param>
+        /// <param name="newPath"></param>
+        public void UpdateNodePath(String oldPath, String newPath)
         {
             foreach (var item in DataAccessList)
             {
                 item.UpdateNodePath(oldPath, newPath);
             }
         }
-
-        public static void DeleteDataInfoObjectOfNodeAndItsChildren(String nodePath)
+        /// <summary>
+        /// 在数据库中按照节点路径删除相关联的数据对象（包括其子对象所关联的也一并删除)
+        /// </summary>
+        /// <param name="nodePath"></param>
+        public void DeleteDataInfoObjectOfNodeAndItsChildren(String nodePath)
         {
             foreach (var item in DataAccessList)
             {
                 item.DeleteDataInfoObjectOfNodeAndItsChildren(nodePath);
+                
             }
         }
-        
+
     }
 }

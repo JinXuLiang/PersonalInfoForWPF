@@ -104,5 +104,10 @@ namespace FolderNode
         {
             FolderResources.RootControl.UpdateDataObjectInMemory();
         }
+
+        public void SetRootControlDataAccessObj(IDataAccess accessObj)
+        {
+            FolderResources.RootControl.accessObj = accessObj as FolderAccess;
+        }
     }
 }
