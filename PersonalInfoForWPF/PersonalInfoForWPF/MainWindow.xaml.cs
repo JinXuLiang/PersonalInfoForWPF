@@ -183,7 +183,7 @@ namespace PersonalInfoForWPF
             {
                 findNodesWindow = new FindNodes();
             }
-            findNodesWindow.SetTree(curDbInfoTab.treeView1);
+            
             //创建连接字符串
             String EFConnectString = DALConfig.getEFConnectionString(curDbInfoTab.dbInfoObject.DatabaseFilePath);
 
@@ -194,11 +194,16 @@ namespace PersonalInfoForWPF
             Task tsk = new Task(() =>
             {
                 curDbInfoTab.treeView1.EFConnectionString = EFConnectString;
+              
                 String treeXML = curDbInfoTab.treeView1.LoadTreeXMLFromDB();
+
                 Action afterFetchTreeXML = () =>
                 {
+                  
                     curDbInfoTab.treeView1.LoadFromXmlString(treeXML);
                     curDbInfoTab.treeView1.ShowNode(curDbInfoTab.dbInfoObject.LastVisitNodePath);
+                    //绑定树节点集合到查找窗体
+                    findNodesWindow.SetTree(curDbInfoTab.treeView1);
                     curDbInfoTab.visitedNodesManager = new VisitedNodesManager(curDbInfoTab.treeView1);
 
                     MenuItem mnuChangeTextColor = curDbInfoTab.treeView1.ContextMenu.Items[curDbInfoTab.treeView1.ContextMenu.Items.Count - 1] as MenuItem;

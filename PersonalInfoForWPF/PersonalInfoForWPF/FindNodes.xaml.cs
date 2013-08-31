@@ -90,7 +90,8 @@ namespace PersonalInfoForWPF
                 //显示新数据
                 TreeViewIconsItem node = dgNodes.SelectedItem as TreeViewIconsItem;
                 _tree.ShowNode(node.Path);
-
+                //如果当前节点不可视，则滚动显示它！
+                node.BringIntoView();
             }
         }
 
