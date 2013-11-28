@@ -11,7 +11,10 @@ namespace SystemLibrary
     [Serializable]
     public class ConfigArgus
     {
-        
+        /// <summary>
+        /// 代表本软件的最新版本，每次更改之后，都应该更新此版本号
+        /// </summary>
+        public const String version = "2.0.2.1";
        
         private double treeNodeDefaultFontSize=15;
         /// <summary>

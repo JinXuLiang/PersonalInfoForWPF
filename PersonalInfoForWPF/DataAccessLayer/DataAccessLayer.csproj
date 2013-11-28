@@ -94,6 +94,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InfoCenterModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="InfoCenterModel.Views.cs" />
     <Compile Include="MainTree\MainTreeRepository.cs" />
     <Compile Include="NodeDataSearchRepository.cs" />
     <Compile Include="NodeMoveBetweenDBManager.cs" />

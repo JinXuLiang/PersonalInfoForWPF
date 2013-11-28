@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorBrushList.cs" />
+    <Compile Include="InfoTab\InfoTabContent.xaml.cs">
+      <DependentUpon>InfoTabContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InfoTab\InfoTabControl.xaml.cs">
       <DependentUpon>InfoTabControl.xaml</DependentUpon>
     </Compile>
@@ -86,6 +89,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="InfoTab\InfoTabContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="InfoTab\InfoTabControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

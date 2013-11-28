@@ -25,7 +25,17 @@ namespace WPFUserControlLibrary
             InitializeComponent();
            
         }
-    
+
+       
+     
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="TabHeaderText"></param>
+        public void Add(String TabHeaderText)
+        {
+            Add(TabHeaderText, new InfoTabContent());
+        }
         /// <summary>
         /// 添加新选项卡，指定选项卡标题和内容
         /// </summary>

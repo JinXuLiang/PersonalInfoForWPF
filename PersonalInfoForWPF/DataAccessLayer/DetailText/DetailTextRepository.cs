@@ -42,7 +42,7 @@ namespace DetailTextNode
             using (InfocenterEntities context = new InfocenterEntities(EFConnectionString))
             {
                 context.DetailTextDBs.Add(dbObj);
-               
+                Console.WriteLine("详细节点的Create（）方法：Text：{0},Path:{1},EFConnectionString:{2}", dbObj.Text, dbObj.Path, EFConnectionString);
                 return context.SaveChanges();
             }
         }

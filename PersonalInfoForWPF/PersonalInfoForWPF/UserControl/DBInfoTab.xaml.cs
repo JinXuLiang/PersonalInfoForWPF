@@ -293,7 +293,7 @@ namespace PersonalInfoForWPF
                 {
                     System.Windows.Forms.Clipboard.SetText(str);
                 }
-                catch (System.Runtime.InteropServices.ExternalException ex)
+                catch (System.Runtime.InteropServices.ExternalException)
                 {
                     MessageBox.Show("打开剪贴板失败,可能有其他程序正在使用。请稍候重试操作。");
                 }

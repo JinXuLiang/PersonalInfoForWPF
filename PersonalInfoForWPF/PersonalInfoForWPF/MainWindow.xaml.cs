@@ -59,6 +59,7 @@ namespace PersonalInfoForWPF
         private void Init()
         {
             ConfigArgus argu = new ConfigArgus();
+            tbVersionInfo.Text = String.Format("PersonalInfoForWPF ver: {0} 开发：金旭亮", ConfigArgus.version);
             //如果找到了配置文件
             if (File.Exists(SystemConfig.ConfigFileName))
             {

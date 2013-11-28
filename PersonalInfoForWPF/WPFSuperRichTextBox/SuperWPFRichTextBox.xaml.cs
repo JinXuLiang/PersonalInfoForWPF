@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WinForms = System.Windows.Forms;
 using SystemLibrary;
+//using System.Drawing;
 
 namespace WPFSuperRichTextBox
 {
@@ -622,8 +623,26 @@ namespace WPFSuperRichTextBox
 
         private void OnPaste(object sender, ExecutedRoutedEventArgs e)
         {
+            //提取剪贴板数据
+            IDataObject dataObject=Clipboard.GetDataObject();
+            //检查数据是否为设备无关位图
+            if(dataObject!=null && dataObject.GetData(DataFormats.Dib)!=null){
+                //将Dib转换为Bitmap
+                Stream imageData = Clipboard.GetDataObject().GetData(DataFormats.Dib) as Stream;
+                System.Drawing.Bitmap bmp = MySuperEditorHelper.CreateBitmapFromDib(imageData);
+                //创建WPF的Image控件，并将其插入到当前光标位置
+                System.Windows.Controls.Image imageControl = new System.Windows.Controls.Image();
+                imageControl.Source = MySuperEditorHelper.BitmapToImageSource(bmp);
+                imageControl.Width = bmp.Width;
+                imageControl.Height = bmp.Height;
+                InlineUIContainer container = new InlineUIContainer(imageControl,RichTextBox1.Selection.Start);
+            }
+            else
+            {
+                 RichTextBox1.Paste();
+            }
 
-            RichTextBox1.Paste();
+
             if (Clipboard.ContainsData(DataFormats.Bitmap))
             {
                 //如果粘贴的是图片，则设置为左对齐（因为默认情况下，粘贴图片是居中对齐）

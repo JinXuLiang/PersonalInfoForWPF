@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{A1EF9828-4CD1-4A0D-903F-A4342B1ADD77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceLibrary", "InterfaceLibrary\InterfaceLibrary.csproj", "{1195EB7E-A10B-4370-927C-3EB9F999520A}"
@@ -31,7 +33,60 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemLibrary", "SystemLibr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderNode", "FolderNode\FolderNode.csproj", "{34CEC466-958B-4745-B61D-006D34571400}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperRichTextBoxTest", "SuperRichTextBoxTest\SuperRichTextBoxTest.csproj", "{0C755C19-D470-4960-8D44-901353A73CB8}"
+EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 13
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://jinxuliang-pc:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = DataAccessLayer\\DataAccessLayer.csproj
+		SccProjectTopLevelParentUniqueName1 = PersonalInfoForWPF.sln
+		SccProjectName1 = DataAccessLayer
+		SccLocalPath1 = DataAccessLayer
+		SccProjectUniqueName2 = DetailTextNode\\DetailTextNode.csproj
+		SccProjectTopLevelParentUniqueName2 = PersonalInfoForWPF.sln
+		SccProjectName2 = DetailTextNode
+		SccLocalPath2 = DetailTextNode
+		SccProjectUniqueName3 = FolderNode\\FolderNode.csproj
+		SccProjectTopLevelParentUniqueName3 = PersonalInfoForWPF.sln
+		SccProjectName3 = FolderNode
+		SccLocalPath3 = FolderNode
+		SccProjectUniqueName4 = InterfaceLibrary\\InterfaceLibrary.csproj
+		SccProjectTopLevelParentUniqueName4 = PersonalInfoForWPF.sln
+		SccProjectName4 = InterfaceLibrary
+		SccLocalPath4 = InterfaceLibrary
+		SccProjectUniqueName5 = NodeFactoryLibrary\\NodeFactoryLibrary.csproj
+		SccProjectTopLevelParentUniqueName5 = PersonalInfoForWPF.sln
+		SccProjectName5 = NodeFactoryLibrary
+		SccLocalPath5 = NodeFactoryLibrary
+		SccProjectUniqueName6 = OnlyTextNode\\OnlyTextNode.csproj
+		SccProjectTopLevelParentUniqueName6 = PersonalInfoForWPF.sln
+		SccProjectName6 = OnlyTextNode
+		SccLocalPath6 = OnlyTextNode
+		SccProjectUniqueName7 = PersonalInfoForWPF\\PersonalInfoForWPF.csproj
+		SccProjectName7 = PersonalInfoForWPF
+		SccLocalPath7 = PersonalInfoForWPF
+		SccProjectUniqueName8 = PublicLibrary\\PublicLibrary.csproj
+		SccProjectName8 = PublicLibrary
+		SccLocalPath8 = PublicLibrary
+		SccProjectUniqueName9 = SystemLibrary\\SystemLibrary.csproj
+		SccProjectName9 = SystemLibrary
+		SccLocalPath9 = SystemLibrary
+		SccProjectUniqueName10 = WPFSuperRichTextBox\\WPFSuperRichTextBox.csproj
+		SccProjectTopLevelParentUniqueName10 = PersonalInfoForWPF.sln
+		SccProjectName10 = WPFSuperRichTextBox
+		SccLocalPath10 = WPFSuperRichTextBox
+		SccProjectUniqueName11 = WPFSuperTreeView\\WPFSuperTreeView.csproj
+		SccProjectTopLevelParentUniqueName11 = PersonalInfoForWPF.sln
+		SccProjectName11 = WPFSuperTreeView
+		SccLocalPath11 = WPFSuperTreeView
+		SccProjectUniqueName12 = WPFUserControlLibrary\\WPFUserControlLibrary.csproj
+		SccProjectTopLevelParentUniqueName12 = PersonalInfoForWPF.sln
+		SccProjectName12 = WPFUserControlLibrary
+		SccLocalPath12 = WPFUserControlLibrary
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
 		Debug|Any CPU = Debug|Any CPU
@@ -160,6 +215,16 @@ Global
 		{34CEC466-958B-4745-B61D-006D34571400}.Release|Any CPU.Build.0 = Release|Any CPU
 		{34CEC466-958B-4745-B61D-006D34571400}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{34CEC466-958B-4745-B61D-006D34571400}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{0C755C19-D470-4960-8D44-901353A73CB8}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -174,5 +239,6 @@ Global
 		{E78E067B-E7D9-446F-8527-ACD29CE0BB90} = {FF3F5128-2B32-420A-A82B-99C835323917}
 		{55E8E2F1-428C-42F4-B611-D30344E8676D} = {FF3F5128-2B32-420A-A82B-99C835323917}
 		{01449673-40F4-4AD2-AFA4-79BC08357472} = {FF3F5128-2B32-420A-A82B-99C835323917}
+		{0C755C19-D470-4960-8D44-901353A73CB8} = {FF3F5128-2B32-420A-A82B-99C835323917}
 	EndGlobalSection
 EndGlobal
