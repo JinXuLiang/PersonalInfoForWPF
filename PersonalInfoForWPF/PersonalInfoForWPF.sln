@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperRichTextBoxTest", "Sup
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 14
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://jinxuliang-pc:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -86,6 +86,10 @@ Global
 		SccProjectTopLevelParentUniqueName12 = PersonalInfoForWPF.sln
 		SccProjectName12 = WPFUserControlLibrary
 		SccLocalPath12 = WPFUserControlLibrary
+		SccProjectUniqueName13 = SuperRichTextBoxTest\\SuperRichTextBoxTest.csproj
+		SccProjectTopLevelParentUniqueName13 = PersonalInfoForWPF.sln
+		SccProjectName13 = SuperRichTextBoxTest
+		SccLocalPath13 = SuperRichTextBoxTest
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU

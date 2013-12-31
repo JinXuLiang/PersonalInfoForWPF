@@ -14,7 +14,7 @@ namespace SystemLibrary
         /// <summary>
         /// 代表本软件的最新版本，每次更改之后，都应该更新此版本号
         /// </summary>
-        public const String version = "2.0.2.1";
+        public const String version = "2.1";
        
         private double treeNodeDefaultFontSize=15;
         /// <summary>
@@ -25,7 +25,25 @@ namespace SystemLibrary
             get { return treeNodeDefaultFontSize; }
             set { treeNodeDefaultFontSize = value; }
         }
-       
+
+        [NonSerialized]
+        private bool _IsArgumentsValueChanged = false;
+        /// <summary>
+        /// 判断一下用户是否通过“系统设置”窗口更改了设置，如果没有更改，则不重启,本属性不参与序列化
+        /// </summary>
+        /// <returns></returns>
+        public bool IsArgumentsValueChanged
+        {
+            get
+            {
+                return _IsArgumentsValueChanged;
+            }
+            set
+            {
+                _IsArgumentsValueChanged = value;
+            }
+        }
+
         private  double richTextEditorDefaultFontSize = 20;
         /// <summary>
         /// 文本编辑器的默认字体大小，在SuperWPFRichTextBox的Init()中设置 
@@ -43,38 +61,6 @@ namespace SystemLibrary
 
 
         }
-
-        //private String lastVisitNodePath = "";
-        ///// <summary>
-        ///// 程序退出时最后访问的节点路径
-        ///// </summary>
-        //public String LastVisitNodePath
-        //{
-        //    get
-        //    {
-        //        return lastVisitNodePath;
-        //    }
-        //    set
-        //    {
-        //        lastVisitNodePath = value;
-        //    }
-        //}
-
-        //private String _dbFileName = "infocenter.sdf";
-        ///// <summary>
-        ///// 数据库文件名
-        ///// </summary>
-        //public String DBFileName
-        //{
-        //    get
-        //    {
-        //        return _dbFileName;
-        //    }
-        //    set
-        //    {
-        //        _dbFileName = value;
-        //    }
-        //}
 
         private List<DatabaseInfo> _infos = new List<DatabaseInfo>();
         /// <summary>

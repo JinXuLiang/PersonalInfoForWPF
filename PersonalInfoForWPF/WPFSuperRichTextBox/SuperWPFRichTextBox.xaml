@@ -184,7 +184,8 @@
                 <Button x:Name="btnDecreaseFontSize" Click="btnChnageFontSize_Click" ToolTip="减小字体" Command="EditingCommands.DecreaseFontSize" CommandTarget="{Binding ElementName=RichTextBox1}">
                     <Image Source="Image\DecreaseFontSize.png" Width="20" Height="20" />
                 </Button>
-                <TextBox BorderBrush="Black" BorderThickness="1" ToolTip="直接设置选中部分的字体大小" Name="txtFontSize" MinWidth="30" PreviewKeyDown="txtFontSize_KeyDown" ></TextBox>
+                <TextBox BorderBrush="Black" BorderThickness="1" ToolTip="直接设置选中部分的字体大小" Name="txtFontSize" MinWidth="30"
+                         PreviewKeyDown="txtFontSize_KeyDown" ></TextBox>
                 <Separator />
 
                 <Button Name="btnClearAllProperties" Click="btnClearAllProperties_Click" ToolTip="将选中的文本还原到默认格式">还原到默认格式</Button>

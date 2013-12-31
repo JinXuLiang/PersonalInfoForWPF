@@ -15,6 +15,10 @@ namespace NodeFactoryLibrary
     public class NodeFactory
     {
         /// <summary>
+        /// 用于引用主窗体，节点可以使用此引用调用主窗体所提供的功能（比如显示信息）
+        /// </summary>
+        public static IMainWindowFunction _mainWindow = null;
+        /// <summary>
         /// 依据节点类型创建"空白"的数据信息对象，其HasBeenLoadFromStorage属性为false
         /// （无需数据存储的节点，如OnlyText例此，其HasBeenLoadFromStorage始终为true）
         /// </summary>
@@ -25,13 +29,13 @@ namespace NodeFactoryLibrary
             NodeDataObject nodeDataObject = new NodeDataObject();
             if (NodeType == "OnlyText")
             {
-                nodeDataObject.DataItem = new OnlyTextInfo();
+                nodeDataObject.DataItem = new OnlyTextInfo() { MainWindow=_mainWindow };
                 nodeDataObject.AccessObject = null;
             }
             if (NodeType == "Folder")
             {
-                FolderInfo info=new FolderInfo();
-                FolderAccess access=new FolderAccess(EFConnectionString);
+                FolderInfo info = new FolderInfo() { MainWindow = _mainWindow };
+                FolderAccess access = new FolderAccess(EFConnectionString) ;
                 info.SetRootControlDataAccessObj(access);
 
                 nodeDataObject.DataItem =info ;
@@ -43,7 +47,7 @@ namespace NodeFactoryLibrary
             }
             if (NodeType == "DetailText")
             {
-                DetailTextInfo info=new DetailTextInfo(); 
+                DetailTextInfo info = new DetailTextInfo() { MainWindow = _mainWindow }; 
                 DetailTextAccess accessObj= new DetailTextAccess(EFConnectionString);
 
                 info.SetRootControlDataAccessObj(accessObj);

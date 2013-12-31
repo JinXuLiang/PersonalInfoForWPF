@@ -11,6 +11,7 @@ namespace FolderNode
 {
     public class FolderInfo:IDataInfo
     {
+        private const string NoteText = "文件夹型节点，压住Control键可以选择多个文件。";
         public bool HasBeenLoadFromStorage
         {
             get;
@@ -92,6 +93,11 @@ namespace FolderNode
         public void RefreshDisplay()
         {
             FolderResources.RootControl.RefreshDisplay();
+            //显示默认的提示信息
+            if (_mainWindow != null)
+            {
+                _mainWindow.ShowInfo(NoteText);
+            }
         }
 
         public void BindToRootControl()
@@ -108,6 +114,19 @@ namespace FolderNode
         public void SetRootControlDataAccessObj(IDataAccess accessObj)
         {
             FolderResources.RootControl.accessObj = accessObj as FolderAccess;
+        }
+
+        private IMainWindowFunction _mainWindow = null;
+        public IMainWindowFunction MainWindow
+        {
+            get
+            {
+                return _mainWindow;
+            }
+            set
+            {
+                _mainWindow = value;
+            }
         }
     }
 }

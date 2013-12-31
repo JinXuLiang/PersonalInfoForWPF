@@ -34,8 +34,13 @@ namespace PersonalInfoForWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IMainWindowFunction
     {
+        /// <summary>
+        /// 代表主窗体默认显示的标题
+        /// </summary>
+        private const String MainWindowDefaultTitle = "个人资料管理中心";
+
         public MainWindow()
         {
 
@@ -47,17 +52,23 @@ namespace PersonalInfoForWPF
         /// 表示当前激活的数据库选项卡
         /// </summary>
         private DBInfoTab curDbInfoTab = null;
+
         /// <summary>
         /// 用于查找的窗口
         /// </summary>
         private FindNodes findNodesWindow = null;
 
-      
+
         /// <summary>
         /// 完成系统初始化功能
         /// </summary>
         private void Init()
         {
+            //设置NodeFactory的主窗体引用，以便让它创建节点对象时，一并将主窗体引用传给节点
+            //从而允许节点调用主窗体的功能，此句代码必须在装入全树节点前完成，否则，节点的DataItem对象
+            //将无法引用到主窗体
+            NodeFactory._mainWindow = this;
+
             ConfigArgus argu = new ConfigArgus();
             tbVersionInfo.Text = String.Format("PersonalInfoForWPF ver: {0} 开发：金旭亮", ConfigArgus.version);
             //如果找到了配置文件
@@ -103,7 +114,7 @@ namespace PersonalInfoForWPF
                 if (DBtabContainer.Items.Count != 0)
                 {
                     //设置当前激活的卡片
-                   
+
                     if (argu.ActiveDBIndex < DBtabContainer.Items.Count && allDBAreOk)
                     {
                         DBtabContainer.SelectedIndex = argu.ActiveDBIndex;
@@ -130,12 +141,19 @@ namespace PersonalInfoForWPF
             DBtabContainer.SelectionChanged += DBtabContainer_SelectionChanged;
             //关闭选项卡时，激发此事件
             DBtabContainer.TabPageClosed += DBtabContainer_TabPageClosed;
+
         }
 
         void DBtabContainer_TabPageClosed(object sender, TabPageClosedEventArgs e)
         {
             //保存被关闭的选项卡的数据
             DBInfoTab closedTab = e.ClosedTabItem.Content as DBInfoTab;
+            //如果被关闭的是包容有被剪切节点的选项卡，则设置相关的变量为null
+            if (cutNodeSourceTab != null && cutNodeSourceTab == closedTab)
+            {
+                cutNodeSourceTab = null;
+                cutNode = null;
+            }
             //从参数中移除本选项卡所对应的DbInfo对象
             int index = SystemConfig.configArgus.DbInfos.IndexOf(closedTab.dbInfoObject);
             if (index != -1)
@@ -184,7 +202,7 @@ namespace PersonalInfoForWPF
             {
                 findNodesWindow = new FindNodes();
             }
-            
+
             //创建连接字符串
             String EFConnectString = DALConfig.getEFConnectionString(curDbInfoTab.dbInfoObject.DatabaseFilePath);
 
@@ -195,12 +213,12 @@ namespace PersonalInfoForWPF
             Task tsk = new Task(() =>
             {
                 curDbInfoTab.treeView1.EFConnectionString = EFConnectString;
-              
+
                 String treeXML = curDbInfoTab.treeView1.LoadTreeXMLFromDB();
 
                 Action afterFetchTreeXML = () =>
                 {
-                  
+
                     curDbInfoTab.treeView1.LoadFromXmlString(treeXML);
                     curDbInfoTab.treeView1.ShowNode(curDbInfoTab.dbInfoObject.LastVisitNodePath);
                     //绑定树节点集合到查找窗体
@@ -436,7 +454,18 @@ namespace PersonalInfoForWPF
             {
                 curDbInfoTab.treeView1.SelectedItem.EndEdit();
             }
-            curDbInfoTab.treeView1.DeleteNode(curDbInfoTab.treeView1.SelectedItem as TreeViewIconsItem);
+            //删除多级节点时询问用户
+            TreeViewIconsItem selectedNode = curDbInfoTab.treeView1.SelectedItem as TreeViewIconsItem;
+            if (selectedNode != null && curDbInfoTab.treeView1.GetChildren(selectedNode).Count > 0)
+            {
+                MessageBoxResult result = MessageBox.Show("您将要删除一个包含有下级信息的节点，删除操作不可恢复，真的进行吗？", "删除节点", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+
+            }
+            curDbInfoTab.treeView1.DeleteNode(selectedNode);
             //保存树结构
             curDbInfoTab.SaveTreeToDB();
 
@@ -453,7 +482,7 @@ namespace PersonalInfoForWPF
             TreeViewIconsItem selectedNode = curDbInfoTab.treeView1.SelectedItem as TreeViewIconsItem;
             if (selectedNode != null)
             {
-               selectedNode.BeginEdit();
+                selectedNode.BeginEdit();
             }
 
         }
@@ -467,9 +496,24 @@ namespace PersonalInfoForWPF
             {
                 curDbInfoTab.treeView1.SelectedItem.EndEdit();
             }
+            //如果己经有被剪切的节点，则取消它的下划线状态
+            if (cutNode != null && cutNode != curDbInfoTab.treeView1.SelectedItem)
+            {
+                cutNode.Strikethrough = false;
+            }
             cutNode = curDbInfoTab.treeView1.SelectedItem as TreeViewIconsItem;
-            curDbInfoTab.treeView1.CutNode(cutNode);
+            cutNode.Strikethrough = true;
             cutNodeSourceTab = curDbInfoTab;
+            String info = "";
+            if (cutNode.HeaderText.Length > 30)
+            {
+                info = "节点：\"" + cutNode.HeaderText.Substring(0, 30) + "\"己被剪切";
+            }
+            else
+            {
+                info = "节点：\"" + cutNode.HeaderText + "\"己被剪切";
+            }
+            ShowInfo(info);
         }
 
         private void PasteNode(object sender, ExecutedRoutedEventArgs e)
@@ -478,12 +522,26 @@ namespace PersonalInfoForWPF
             {
                 curDbInfoTab.treeView1.SelectedItem.EndEdit();
             }
-            if (cutNode == null)
+            if (cutNode == null || cutNodeSourceTab == null)
             {
                 return;
             }
             TreeViewIconsItem selectedNode = curDbInfoTab.treeView1.SelectedItem as TreeViewIconsItem;
-            String newPath = selectedNode.Path + cutNode.HeaderText + "/";
+            if (selectedNode == cutNode)
+            {
+                return;
+            }
+            String newPath = "";
+
+            if (selectedNode == null)//如果目标选项卡中没有选中任何节点，则默认添加到根节点
+            {
+                newPath = "/" + cutNode.HeaderText + "/";
+            }
+            else
+            {
+                newPath = selectedNode.Path + cutNode.HeaderText + "/";
+            }
+
             if (curDbInfoTab.treeView1.IsNodeExisted(newPath))
             {
                 MessageBox.Show("在此处粘贴将导致两个节点拥有相同的路径，因此，请在其他地方粘贴");
@@ -492,36 +550,67 @@ namespace PersonalInfoForWPF
             //在同一数据库中粘贴
             if (curDbInfoTab == cutNodeSourceTab)
             {
+                //先移除被剪切的子树
+                curDbInfoTab.treeView1.CutNode(cutNode);
                 curDbInfoTab.treeView1.PasteNode(cutNode, selectedNode);
+
                 curDbInfoTab.OnNodeMove(NodeMoveType.NodePaste);
             }
             else
-            { 
+            {
                 //在不同的数据库中粘贴
-                String sourcePath=cutNode.Path;
-                String targetPath=selectedNode.Path;
-                //将源树保存到数据库中
-                cutNodeSourceTab.treeView1.SaveToDB();
-                //将剪切的节点子树追加到当前节点
-                curDbInfoTab.treeView1.PasteNodeCrossDB(cutNode, selectedNode);
-                //保存目标树结构
-                curDbInfoTab.treeView1.SaveToDB();
-                //更新所有粘贴节点的数据存取对象
-                String EFConnectionString = DALConfig.getEFConnectionString(curDbInfoTab.dbInfoObject.DatabaseFilePath);
-                UpdateDataAcessObject(selectedNode, EFConnectionString);
-               //更新数据库中内容
-                NodeMoveBetweenDBManager nodeMoveManager = new NodeMoveBetweenDBManager(cutNodeSourceTab.dbInfoObject.DatabaseFilePath, curDbInfoTab.dbInfoObject.DatabaseFilePath);
-                nodeMoveManager.MoveNodeBetweenDB(sourcePath,targetPath);
+                String sourcePath = cutNode.Path;
+                String targetPath = "";
+                if (selectedNode != null)
+                {
+                    targetPath = selectedNode.Path;
+                }
+                else
+                {
+                    targetPath = "/";
+                }
+
+                //先移除源树中被剪切的子树
+                cutNodeSourceTab.treeView1.CutNode(cutNode);
                 
 
+                //将剪切的节点子树追加到当前节点
+                curDbInfoTab.treeView1.PasteNodeCrossDB(cutNode, selectedNode);
+
+                //保存目标树结构
+                curDbInfoTab.treeView1.SaveToDB();
+                //将源树保存到数据库中
+                cutNodeSourceTab.treeView1.SaveToDB();
+
+                //更新所有粘贴节点的数据存取对象
+                String EFConnectionString = DALConfig.getEFConnectionString(curDbInfoTab.dbInfoObject.DatabaseFilePath);
+                if (selectedNode != null)
+                {
+                    UpdateDataAcessObject(selectedNode, EFConnectionString);
+                }
+                else
+                {
+                    UpdateDataAcessObject(cutNode, EFConnectionString);
+                }
+               
+                //更新数据库中内容
+                NodeMoveBetweenDBManager nodeMoveManager = new NodeMoveBetweenDBManager(cutNodeSourceTab.dbInfoObject.DatabaseFilePath, curDbInfoTab.dbInfoObject.DatabaseFilePath);
+                nodeMoveManager.MoveNodeBetweenDB(sourcePath, targetPath);
 
             }
+            //取消删除线显示
+            cutNode.Strikethrough = false;
             cutNode = null;
-            curDbInfoTab.treeView1.SelectedItem.IsExpanded = true;
+            cutNodeSourceTab = null;
+            if (curDbInfoTab.treeView1.SelectedItem != null)
+            {
+                 curDbInfoTab.treeView1.SelectedItem.IsExpanded = true;
+            }
+           
 
 
         }
-        private void UpdateDataAcessObject(TreeViewIconsItem root,String EFConnectionString)
+        private void UpdateDataAcessObject(TreeViewIconsItem root, String EFConnectionString)
         {
             if (root == null)
             {
@@ -559,12 +648,6 @@ namespace PersonalInfoForWPF
                 findNodesWindow.Close();
             }
 
-            if (cutNode != null)
-            {
-                e.Cancel = true;
-                MessageBox.Show("有未粘贴的节点。请先粘贴节点后再退出");
-                return;
-            }
             //用户没有打开任何数据库文件
             if (curDbInfoTab == null)
             {
@@ -585,7 +668,7 @@ namespace PersonalInfoForWPF
             {
                 selectedItem = ((item as TabItem).Content as DBInfoTab).treeView1.SelectedItem;
                 info = ((item as TabItem).Content as DBInfoTab).dbInfoObject;
-              
+
                 SystemConfig.configArgus.DbInfos.Add(info);
             }
             SystemConfig.configArgus.ActiveDBIndex = DBtabContainer.SelectedIndex;
@@ -605,14 +688,12 @@ namespace PersonalInfoForWPF
             if (curDbInfoTab.treeView1.IsInEditMode)
             {
                 curDbInfoTab.treeView1.SelectedItem.EndEdit();
-                // SystemConfig.configArgus.LastVisitNodePath = curDbInfoTab.treeView1.SelectedItem.Path;
             }
-            if (result.Value)
+            if (result.Value && SystemConfig.configArgus.IsArgumentsValueChanged)
             {
                 DeepSerializer.BinarySerialize(SystemConfig.configArgus, SystemConfig.ConfigFileName);
-                
 
-                MessageBox.Show("参数修改，请重新启动程序");
+                MessageBox.Show("参数修改，请重新启动程序", "重启");
 
                 findNodesWindow.ShouldExit = true;
                 Close();
@@ -765,7 +846,7 @@ namespace PersonalInfoForWPF
                     return;
                 }
             }
-           
+
 
             System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             saveFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -783,13 +864,14 @@ namespace PersonalInfoForWPF
                 bool IsDBAlreadyOpen = false;
                 foreach (var item in DBtabContainer.Items)
                 {
-                    if(((item as TabItem).Content as DBInfoTab).dbInfoObject.DatabaseFilePath==saveFileDialog.FileName){
-                        IsDBAlreadyOpen=true;
+                    if (((item as TabItem).Content as DBInfoTab).dbInfoObject.DatabaseFilePath == saveFileDialog.FileName)
+                    {
+                        IsDBAlreadyOpen = true;
                         break;
                     }
                 }
 
-                
+
                 if (IsDBAlreadyOpen)
                 {
                     MessageBox.Show("不能选择正在使用的资料库文件名");
@@ -826,16 +908,17 @@ namespace PersonalInfoForWPF
 
         private void DBtabContainer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           
-            //初始化时，此方法不做任何事
+
+            //初始化时，此方法不做任何事，仅设置默认标题
             if (DBtabContainer.SelectedIndex == -1)
             {
+                this.Title = MainWindowDefaultTitle;
                 return;
             }
             //当TabControl的TabItem中放置有ComboBox控件时，ComboBox的SelectionChanged事件会触发
             //TabControl的SelectionChanged事件，虽然可以通过在下层控件的事件响应过程中添加
             //e.Handled = true阻止这一过程，但还是在此屏蔽掉此事件的响应代码，以免有漏网之鱼
-            if (e.AddedItems.Count == 1 && e.AddedItems[0].GetType().Name!="TabItem")
+            if (e.AddedItems.Count == 1 && e.AddedItems[0].GetType().Name != "TabItem")
             {
                 return;
             }
@@ -854,8 +937,31 @@ namespace PersonalInfoForWPF
                 findNodesWindow.SetTree(curDbInfoTab.treeView1);
                 curDbInfoTab.RefreshDisplay();
             }
+            //切换选项卡时，恢复状态栏默认显示文本
+            if (cutNode == null)
+            {
+                ShowInfo("就绪");
+            }
 
-            
+        }
+        /// <summary>
+        /// 线程安全的在主窗体上显示信息的方法
+        /// </summary>
+        /// <param name="info"></param>
+        public void ShowInfo(string info)
+        {
+            if (Dispatcher.CheckAccess())
+            {
+                tbInfo.Text = info;
+            }
+            else
+            {
+                Action<string> showInfoDel = (str) =>
+                {
+                    tbInfo.Text = info;
+                };
+                Dispatcher.BeginInvoke(showInfoDel, info);
+            }
 
         }
     }

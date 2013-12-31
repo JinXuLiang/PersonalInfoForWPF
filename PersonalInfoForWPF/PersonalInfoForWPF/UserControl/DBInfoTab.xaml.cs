@@ -78,15 +78,17 @@ namespace PersonalInfoForWPF
             {
                 ChangeNodeIcon(selectedNode, selectedNode.NodeData.DataItem.SelectedIcon);
             }
+           
         }
         #endregion
 
         public void ChangeNodeType(String ToType)
         {
-            if (treeView1.SelectedItem != null)
+            if (treeView1.SelectedItem == null)
             {
-                treeView1.SelectedItem.EndEdit();
+                return;
             }
+            treeView1.SelectedItem.EndEdit();
             String FromType = treeView1.SelectedItem.NodeData.DataItem.NodeType;
 
             NodeDataObject nodeDataObject = treeView1.SelectedItem.NodeData;
@@ -181,6 +183,7 @@ namespace PersonalInfoForWPF
             if (newSelectedNode.NodeData.DataItem.NodeType == "OnlyText")
             {
                 NodeUIContainer.Content = null;
+                newSelectedNode.NodeData.DataItem.RefreshDisplay();
                 return;
             }
             NodeDataObject dataInfoObject = newSelectedNode.NodeData;
@@ -195,8 +198,14 @@ namespace PersonalInfoForWPF
                
                 if (dataObj != null)
                 {
-                    //将己装入数据的对象挂到节点上
+                    //给将己装入数据的对象添加对主窗体的引用
+                    if (NodeFactory._mainWindow != null)
+                    {
+                        dataObj.MainWindow = NodeFactory._mainWindow;
+                    }
+                    //把节点数据对象挂到节点上
                     newSelectedNode.NodeData.DataItem = dataObj;
+                   
                 }
             }
 

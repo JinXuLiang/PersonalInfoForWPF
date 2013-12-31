@@ -9,6 +9,8 @@ namespace DetailTextNode
 {
     public class DetailTextInfo:IDataInfo
     {
+
+        private string NoteText = "就绪";
         public string Path
         {
             get;
@@ -64,6 +66,11 @@ namespace DetailTextNode
         public void RefreshDisplay()
         {
             DetailTextResources.RootControl.RefreshDisplay();
+            //显示默认的提示信息
+            if (_mainWindow != null)
+            {
+                _mainWindow.ShowInfo(NoteText);
+            }
         }
 
         public void BindToRootControl()
@@ -89,6 +96,19 @@ namespace DetailTextNode
         public void SetRootControlDataAccessObj(IDataAccess accessObj)
         {
             DetailTextResources.RootControl.accessObj = accessObj as DetailTextAccess;
+        }
+
+        private IMainWindowFunction _mainWindow = null;
+        public IMainWindowFunction MainWindow
+        {
+            get
+            {
+                return _mainWindow;
+            }
+            set
+            {
+                _mainWindow = value;
+            }
         }
     }
 }

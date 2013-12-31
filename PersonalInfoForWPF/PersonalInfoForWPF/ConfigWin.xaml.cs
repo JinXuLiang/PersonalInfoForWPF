@@ -21,7 +21,7 @@ namespace PersonalInfoForWPF
     {
         public ConfigWin()
         {
-            
+
             InitializeComponent();
             ShowConfigArgus();
         }
@@ -36,11 +36,22 @@ namespace PersonalInfoForWPF
             DialogResult = true;
             if (String.IsNullOrEmpty(txtTreeNodeDefaultFontSize.Text) == false)
             {
-                SystemConfig.configArgus.TreeNodeDefaultFontSize = Convert.ToDouble(txtTreeNodeDefaultFontSize.Text);
+                double TreeFontSize = Convert.ToDouble(txtTreeNodeDefaultFontSize.Text);
+                if (Math.Abs(TreeFontSize - SystemConfig.configArgus.TreeNodeDefaultFontSize) > 1e-3)
+                {
+                    SystemConfig.configArgus.TreeNodeDefaultFontSize = TreeFontSize;
+                    SystemConfig.configArgus.IsArgumentsValueChanged = true;
+                }
+
             }
             if (String.IsNullOrEmpty(txtRichTextEditorDefaultFontSize.Text) == false)
             {
-                SystemConfig.configArgus.RichTextEditorDefaultFontSize = Convert.ToDouble(txtRichTextEditorDefaultFontSize.Text);
+                double editorFontSize = Convert.ToDouble(txtRichTextEditorDefaultFontSize.Text);
+                if (Math.Abs(editorFontSize - SystemConfig.configArgus.RichTextEditorDefaultFontSize) > 1e-3)
+                {
+                    SystemConfig.configArgus.RichTextEditorDefaultFontSize = editorFontSize;
+                    SystemConfig.configArgus.IsArgumentsValueChanged = true;
+                }
             }
             Close();
         }

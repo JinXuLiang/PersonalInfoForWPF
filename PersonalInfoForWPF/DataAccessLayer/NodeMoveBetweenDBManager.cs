@@ -40,20 +40,32 @@ namespace DataAccessLayer
         public void MoveNodeBetweenDB(String SourceRootNodePath, String TargetRootNodePath)
         {
 
-
+            //bool IsAddToTargetRoot = false;
+           
             int slashIndex = SourceRootNodePath.LastIndexOf("/", SourceRootNodePath.Length - 2);
             //源节点文本，即在树中显示的文本
             String SourceRootNodeText = SourceRootNodePath.Substring(slashIndex + 1);
-
+            //if (TargetRootNodePath == "/")
+            //{
+            //    IsAddToTargetRoot = true;
+            //}
             //处理DetailText节点
             var sourceDetailNodes = from node in SourceDbContext.DetailTextDBs.AsNoTracking()
                                     where node.Path.StartsWith(SourceRootNodePath)
                                     select node;
             foreach (var detailNode in sourceDetailNodes)
             {
-                //源节点路径去掉开头的“/”之后，拼接到目标路径之后
-
-                detailNode.Path = TargetRootNodePath + detailNode.Path.Replace(SourceRootNodePath, SourceRootNodeText);
+               
+                //if (!IsAddToTargetRoot)
+                //{
+                    //如果不是追加到根节点，则源节点路径去掉开头的“/”之后，拼接到目标路径之后
+                    detailNode.Path = TargetRootNodePath + detailNode.Path.Replace(SourceRootNodePath, SourceRootNodeText);
+                //}
+                //else {
+                //    //如果是追加到根节点
+                //    detailNode.Path ="/"+ detailNode.Path.Replace(SourceRootNodePath, SourceRootNodeText);
+                //}
+               
 
                 TargetDbContext.DetailTextDBs.Add(detailNode);
 
@@ -65,8 +77,17 @@ namespace DataAccessLayer
                                     select node;
             foreach (var folderNode in sourceFolderNodes)
             {
-                //源路径去掉开头的“/”之后，拼接到目标路径之后
-                folderNode.Path = TargetRootNodePath + folderNode.Path.Replace(SourceRootNodePath, SourceRootNodeText);
+                //if (!IsAddToTargetRoot)
+                //{
+                    //源路径去掉开头的“/”之后，拼接到目标路径之后
+                    folderNode.Path = TargetRootNodePath + folderNode.Path.Replace(SourceRootNodePath, SourceRootNodeText);
+                //}
+
+                //else
+                //{
+                //    folderNode.Path = folderNode.Path.Replace(SourceRootNodePath, SourceRootNodeText);
+                //}
+
                 TargetDbContext.FolderDBs.Add(folderNode);
             }
 

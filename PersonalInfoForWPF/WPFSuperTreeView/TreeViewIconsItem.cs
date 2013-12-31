@@ -44,6 +44,30 @@ namespace WPFSuperTreeView
                 edtText.FontSize = value;
             }
         }
+        private bool _Strikethough = false;
+        /// <summary>
+        /// 给节点文本加上或移除删除线
+        /// </summary>
+        public bool Strikethrough
+        {
+            get
+            {
+                return _Strikethough;
+            }
+            set
+            {
+                _Strikethough = value;
+                if (_Strikethough == true)
+                {
+                    textBlock.TextDecorations = TextDecorations.Strikethrough;
+                    
+                }
+                else
+                {
+                    textBlock.TextDecorations = null;
+                }
+            }
+        }
         /// <summary>
         /// 保存本节点的前景色，以便序列化到XML中
         /// 之所以设置其属性，是因为如果直接使用ForeGround，则当此节点处于选中状态时，Foreground总为白色

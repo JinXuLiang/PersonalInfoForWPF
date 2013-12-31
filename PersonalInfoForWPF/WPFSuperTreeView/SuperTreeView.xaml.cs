@@ -68,7 +68,7 @@ namespace WPFSuperTreeView
             {
                 _EFConnectionString = value;
                 _nodePathManager = new NodePathManager(_EFConnectionString);
-                _repository=new MainTreeRepository(_EFConnectionString);
+                _repository = new MainTreeRepository(_EFConnectionString);
             }
         }
         /// <summary>
@@ -84,7 +84,7 @@ namespace WPFSuperTreeView
             tree.Items.Clear();
             nodesManager.nodes.Clear();
             ShouldRaiseSelectedItemChangedEvent = true;
-            
+
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace WPFSuperTreeView
             {
                 _repository.SaveTree(treeXml);
             }
-         
+
 
             return treeNode;
 
@@ -361,7 +361,7 @@ namespace WPFSuperTreeView
             {
                 _nodePathManager.DeleteDataInfoObjectOfNodeAndItsChildren(selectedNode.Path);
             }
-           
+
 
         }
         #endregion
@@ -650,12 +650,12 @@ namespace WPFSuperTreeView
             //更新所有内存相关子节点集合的路径
             nodesManager.UpdateNodePath(oldPath, newPath);
             if (_nodePathManager != null)
-            {  
+            {
                 //更新数据库中相关子节点的路径
-            _nodePathManager.UpdateNodePath(oldPath, newPath);
+                _nodePathManager.UpdateNodePath(oldPath, newPath);
 
             }
-          
+
             node.IsSelected = true;
 
             tree.EndInit();
@@ -749,7 +749,7 @@ namespace WPFSuperTreeView
                 //更新数据库中相关子节点的路径
                 _nodePathManager.UpdateNodePath(oldPath, newPath);
             }
-            
+
 
             node.IsSelected = true;
             tree.EndInit();
@@ -790,37 +790,10 @@ namespace WPFSuperTreeView
         /// <param name="attachToNode">将接收被剪切节点的那个节点</param>
         public void PasteNode(TreeViewIconsItem nodeToBeCut, TreeViewIconsItem attachToNode)
         {
-            //if (nodeToBeCut == null || attachToNode == null || nodeToBeCut.Parent != null)
-            //{
-            //    return;
-            //}
-            //ShouldRaiseSelectedItemChangedEvent = true;
-            //String oldPath = nodeToBeCut.Path;
-            //String newPath = attachToNode.Path + nodeToBeCut.HeaderText + "/";
-            //tree.BeginInit();
-            //attachToNode.Items.Add(nodeToBeCut);
-
-            ////更新所有内存相关子节点集合的路径
-            //nodesManager.UpdateNodePath(oldPath, newPath);
-            ////更新数据库中相关子节点的路径
-            //NodePathManager.UpdateNodePath(oldPath, newPath);
-
-            //tree.EndInit();
-            ////激发事件
-            //if (NodeMove != null)
-            //{
-            //    NodeMoveEventArgs e = new NodeMoveEventArgs
-            //    {
-            //        MoveType = NodeMoveType.NodePaste,
-            //        Node = nodeToBeCut,
-            //        PrevPath = oldPath
-            //    };
-            //    NodeMove(nodeToBeCut, e);
-            //}
             PasteNode(nodeToBeCut, attachToNode, false);
         }
         /// <summary>
-        /// 粘贴节点并自动更新相关的内存,但不更新底层数据库
+        /// 粘贴节点并自动更新相关的节点内存记录,但不更新底层数据库
         /// </summary>
         /// <param name="nodeToBeCut"></param>
         /// <param name="attachToNode"></param>
@@ -830,25 +803,46 @@ namespace WPFSuperTreeView
         }
 
         /// <summary>
-        /// 粘贴节点并自动更新相关的内存,AutoUpdateDB用于控制是否更新底层数据库中的记录
+        /// 粘贴节点并自动更新相关的内存,IsCrossDB表明是否是跨数据库粘贴
         /// </summary>
         /// <param name="nodeToBeCut"></param>
         /// <param name="attachToNode"></param>
-        /// <param name="AutoUpdateDB"></param>
+        /// <param name="IsCrossDB">IsCrossDB表明是否是跨数据库粘贴</param>
         private void PasteNode(TreeViewIconsItem nodeToBeCut, TreeViewIconsItem attachToNode, bool IsCrossDB)
         {
-            if (nodeToBeCut == null || attachToNode == null || nodeToBeCut.Parent != null)
+            if (nodeToBeCut == null || nodeToBeCut.Parent != null)
             {
                 return;
             }
             ShouldRaiseSelectedItemChangedEvent = true;
             String oldPath = nodeToBeCut.Path;
-            String newPath = attachToNode.Path + nodeToBeCut.HeaderText + "/";
+            String newPath = "";
+            //如果attachToNode为null，则将在根节点添加子树
+            if (attachToNode == null)
+            {
+                //newPath = "/" + nodeToBeCut.HeaderText + "/";
+                newPath = "/";
+            }
+            else
+            {
+                //当前己经选中了节点，被粘贴的节点成为其子树
+                newPath = attachToNode.Path + nodeToBeCut.HeaderText + "/";
+            }
+
             tree.BeginInit();
 
             if (!IsCrossDB)
             {
-                attachToNode.Items.Add(nodeToBeCut);
+                if (attachToNode != null)
+                {
+                    //被粘贴的节点成为当前选中节点的子树
+                    attachToNode.Items.Add(nodeToBeCut);
+                }
+                else
+                {
+                    //在顶层放置被粘贴的节点
+                    tree.Items.Add(nodeToBeCut);
+                }
 
                 //更新所有内存相关子节点集合的路径
                 nodesManager.UpdateNodePath(oldPath, newPath);
@@ -857,7 +851,7 @@ namespace WPFSuperTreeView
                     //更新数据库中相关子节点的路径
                     _nodePathManager.UpdateNodePath(oldPath, newPath);
                 }
-              
+
                 tree.EndInit();
                 //激发事件
                 if (NodeMove != null)
@@ -874,11 +868,23 @@ namespace WPFSuperTreeView
             else
             {
                 //跨数据库的粘贴
-                attachToNode.Items.Add(nodeToBeCut);
-                updateChildNodePath(attachToNode.Path, nodeToBeCut);
-                             
+               
+                if (attachToNode != null)
+                {
+                    //被粘贴的节点成为当前选中节点的子树
+                    attachToNode.Items.Add(nodeToBeCut); 
+                    updateChildNodePath(attachToNode.Path, nodeToBeCut);
+                }
+                else
+                {
+                    //在顶层放置被粘贴的节点
+                    tree.Items.Add(nodeToBeCut);
+                    updateChildNodePath("/", nodeToBeCut);
+                }
+               
+
                 tree.EndInit();
-                
+
             }
         }
         /// <summary>
@@ -888,11 +894,11 @@ namespace WPFSuperTreeView
         /// <param name="nodeAttachedToNewParent"></param>
         private void updateChildNodePath(String newRootPath, TreeViewIconsItem nodeAttachedToNewParent)
         {
-            
+
             if (nodeAttachedToNewParent != null)
             {
                 String oldChildTreeRootPath = nodeAttachedToNewParent.Path;
-                nodeAttachedToNewParent.Path = newRootPath + nodeAttachedToNewParent.HeaderText+"/";
+                nodeAttachedToNewParent.Path = newRootPath + nodeAttachedToNewParent.HeaderText + "/";
                 nodesManager.nodes.Add(nodeAttachedToNewParent);
                 foreach (var child in nodeAttachedToNewParent.Items)
                 {
@@ -945,13 +951,13 @@ namespace WPFSuperTreeView
             {
                 return null;
             }
-            NodeDataObject nodeDataObject = NodeFactory.CreateDataInfoNode(element.Attribute("NodeType").Value,EFConnectionString);
+            NodeDataObject nodeDataObject = NodeFactory.CreateDataInfoNode(element.Attribute("NodeType").Value, EFConnectionString);
             TreeViewIconsItem node = new TreeViewIconsItem(this, nodeDataObject);
             node.HeaderText = element.Attribute("Title").Value;
             if (element.Attribute("Foreground") != null)
             {
                 String color = element.Attribute("Foreground").Value;
-                
+
                 node.MyForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
             }
             else
@@ -987,7 +993,7 @@ namespace WPFSuperTreeView
             {
                 element.SetAttributeValue("Foreground", node.MyForeground);
             }
-            
+
 
             return element;
         }
@@ -1158,7 +1164,7 @@ namespace WPFSuperTreeView
         public String LoadTreeXMLFromDB()
         {
 
-           return _repository.GetTreeFromDB();
+            return _repository.GetTreeFromDB();
         }
         #endregion
     }

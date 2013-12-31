@@ -62,6 +62,9 @@ namespace InterfaceLibrary
         /// </summary>
         /// <param name="accessObj"></param>
         void SetRootControlDataAccessObj(IDataAccess accessObj);
-       
+        /// <summary>
+        /// 提供一个主窗体的引用，节点可以使用它来访问主窗体的特定功能，比如在主窗体的状态栏上显示信息
+        /// </summary>
+        IMainWindowFunction MainWindow { get; set; }
     }
 }

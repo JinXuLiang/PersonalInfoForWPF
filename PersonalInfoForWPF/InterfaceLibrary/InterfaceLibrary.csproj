@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="IDataInfo.cs" />
     <Compile Include="IDataAccess.cs" />
+    <Compile Include="IMainWindowFunction.cs" />
     <Compile Include="NodeDataObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

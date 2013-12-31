@@ -12,6 +12,7 @@ namespace OnlyTextNode
 {
     public class OnlyTextInfo : IDataInfo
     {
+        private const String NoteText = "就绪";
         private DateTime _CreateOrModifyTime = DateTime.Now;
         public DateTime ModifyTime
         {
@@ -74,6 +75,11 @@ namespace OnlyTextNode
 
         public void RefreshDisplay()
         {
+            //显示默认的提示信息
+            if (MainWindow != null)
+            {
+                MainWindow.ShowInfo(NoteText);
+            }
             return;
         }
 
@@ -123,6 +129,13 @@ namespace OnlyTextNode
         public void SetRootControlDataAccessObj(IDataAccess accessObj)
         {
             return;
+        }
+
+
+        public IMainWindowFunction MainWindow
+        {
+            get;
+            set;
         }
     }
 }

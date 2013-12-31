@@ -149,7 +149,7 @@ namespace WPFSuperRichTextBox
         #endregion
 
         #region "RichTextBox事件处理"
-       
+
         private void SynchronizeBold()
         {
             object obj = RichTextBox1.Selection.GetPropertyValue(TextElement.FontWeightProperty);
@@ -202,12 +202,12 @@ namespace WPFSuperRichTextBox
 
             if (obj is FontFamily) //设置字体下拉框选项为当前字体
             {
-                String FontName=MySuperEditorHelper.GetLocaliteFontName((FontFamily)obj);
+                String FontName = MySuperEditorHelper.GetLocaliteFontName((FontFamily)obj);
                 //此句居然会引发TabControl的SelectionChanged事件？真是诡异！
-                cboFontFamilies.Text =FontName ;
-               
+                cboFontFamilies.Text = FontName;
+
             }
-                
+
 
         }
 
@@ -272,7 +272,7 @@ namespace WPFSuperRichTextBox
             if (ret == WinForms.DialogResult.OK)
             {
                 rtfManager.LoadOrInsertFile(false, OpenFileDialog1.FileName);
-               
+
 
             }
         }
@@ -288,7 +288,7 @@ namespace WPFSuperRichTextBox
             if (ret == WinForms.DialogResult.OK)
             {
                 rtfManager.LoadOrInsertFile(true, OpenFileDialog1.FileName);
-              
+
             }
         }
 
@@ -299,7 +299,7 @@ namespace WPFSuperRichTextBox
         /// <param name="e"></param>
         private void OnSave(object sender, ExecutedRoutedEventArgs e)
         {
-            
+
             if (OnSaveDocument != null)
             {
                 OnSaveDocument();
@@ -385,9 +385,9 @@ namespace WPFSuperRichTextBox
         /// <param name="args"></param>
         void OnFind(object sender, ExecutedRoutedEventArgs args)
         {
-            if (winFR == null || winFR.IsLoaded==false)
+            if (winFR == null || winFR.IsLoaded == false)
                 winFR = new winFindAndReplace(RichTextBox1);
-           
+
             winFR.Show();
         }
 
@@ -447,11 +447,13 @@ namespace WPFSuperRichTextBox
         }
         private void cboFontFamilies_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            if (cboFontFamilies.SelectedItem != null)
+            {
                 RichTextBox1.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, cboFontFamilies.SelectedItem);
                 RichTextBox1.Focus();
                 e.Handled = true;
-            
+            }
+
         }
 
 
@@ -486,7 +488,7 @@ namespace WPFSuperRichTextBox
             if (obj is double)
             {
 
-                this.txtFontSize.Text = string.Format("{0:F}", obj);
+                this.txtFontSize.Text = string.Format("{0}", Convert.ToInt32(obj));
             }
             else
                 this.txtFontSize.Text = RichTextBox1.FontSize.ToString();
@@ -500,6 +502,7 @@ namespace WPFSuperRichTextBox
             if (e.Key == Key.Enter)
             {
                 SetFontSize();
+                txtFontSize.SelectAll();
             }
         }
 
@@ -624,9 +627,10 @@ namespace WPFSuperRichTextBox
         private void OnPaste(object sender, ExecutedRoutedEventArgs e)
         {
             //提取剪贴板数据
-            IDataObject dataObject=Clipboard.GetDataObject();
+            IDataObject dataObject = Clipboard.GetDataObject();
             //检查数据是否为设备无关位图
-            if(dataObject!=null && dataObject.GetData(DataFormats.Dib)!=null){
+            if (dataObject != null && dataObject.GetData(DataFormats.Dib) != null)
+            {
                 //将Dib转换为Bitmap
                 Stream imageData = Clipboard.GetDataObject().GetData(DataFormats.Dib) as Stream;
                 System.Drawing.Bitmap bmp = MySuperEditorHelper.CreateBitmapFromDib(imageData);
@@ -635,11 +639,14 @@ namespace WPFSuperRichTextBox
                 imageControl.Source = MySuperEditorHelper.BitmapToImageSource(bmp);
                 imageControl.Width = bmp.Width;
                 imageControl.Height = bmp.Height;
-                InlineUIContainer container = new InlineUIContainer(imageControl,RichTextBox1.Selection.Start);
+                //如果当前有选中的，则先清空它，之后再插入图片，这样一来，就实现了“替换”的效果
+                if (String.IsNullOrEmpty(RichTextBox1.Selection.Text) == false)
+                    RichTextBox1.Selection.Text = "";
+                InlineUIContainer container = new InlineUIContainer(imageControl, RichTextBox1.Selection.Start);
             }
             else
             {
-                 RichTextBox1.Paste();
+                RichTextBox1.Paste();
             }
 
 
