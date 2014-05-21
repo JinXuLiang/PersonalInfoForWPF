@@ -114,7 +114,8 @@ namespace PersonalInfoForWPF
             if (rdoTree.IsChecked.Value)
             {
                 //搜索本节点路径记录
-                nodesCollectionView.Filter = (item) => (item as TreeViewIconsItem).NodeData.DataItem.Path.IndexOf(txtSearch.Text) != -1;
+                nodesCollectionView.Filter = 
+                    (item) => (item as TreeViewIconsItem).NodeData.DataItem.Path.IndexOf(txtSearch.Text,StringComparison.CurrentCultureIgnoreCase) != -1;
             }
             else
             {
@@ -124,6 +125,7 @@ namespace PersonalInfoForWPF
             txtSearch.SelectAll();
  
         }
+       
 
         private void rdoTree_Checked(object sender, RoutedEventArgs e)
         {
@@ -144,12 +146,13 @@ namespace PersonalInfoForWPF
                 return;
             }
             //搜索本节点路径记录
-            nodesCollectionView.Filter = (item) => (item as TreeViewIconsItem).NodeData.DataItem.Path.IndexOf(txtSearch.Text) != -1;
+            nodesCollectionView.Filter = (item) => (item as TreeViewIconsItem).NodeData.DataItem.Path.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) != -1; ;
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             txtSearch.Text = "";
+            txtSearch.Focus();
         }
 
         private void btnFirst_Click(object sender, RoutedEventArgs e)

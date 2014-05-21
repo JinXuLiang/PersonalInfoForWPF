@@ -9,8 +9,8 @@
         <StackPanel DockPanel.Dock="Top">
             <GroupBox Header="搜索选项" Margin="5">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <RadioButton x:Name="rdoTree" Content="在节点树中查找" IsChecked="True"  Margin="4" Checked="rdoTree_Checked"/>
-                    <RadioButton x:Name="rdoDB" Content="在数据库中查找" Margin="4" Checked="rdoDB_Checked"/>
+                    <RadioButton x:Name="rdoTree" Content="在节点树中查找(忽略大小写）" IsChecked="True"  Margin="4" Checked="rdoTree_Checked"/>
+                    <RadioButton x:Name="rdoDB" Content="在数据库中查找（区分大小写）" Margin="4" Checked="rdoDB_Checked"/>
                 </StackPanel>
 
             </GroupBox>
